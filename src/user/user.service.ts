@@ -66,7 +66,6 @@ export class UserService {
         );
         res.cookie('accesToken', accesToken, {
           maxAge: 12 * 60 * 60 * 1000,
-          httpOnly: true,
         });
         return sendRespObj(1, 'Sukses Login', accesToken);
       }
