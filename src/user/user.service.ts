@@ -71,6 +71,6 @@ export class UserService {
       }
       return sendRespObj(2, 'email atau password salah', {});
     }
-    sendRespObj(0, 'email tidak terdaftar', {});
+    return sendRespObj(0, 'email tidak terdaftar', {});
   }
 }
