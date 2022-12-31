@@ -19,7 +19,7 @@ export class UserController {
   }
 }
 @Controller('login')
-export class login {
+export class Login {
   constructor(private userService: UserService) {}
   @Post()
   async login(
