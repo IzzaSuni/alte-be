@@ -44,8 +44,8 @@ export class UserService {
       return sendRespObj(3, 'Maaf terjadi kesalahan', {});
     } else {
       let message = '';
-      if (!isDomainValid) message = 'maaf hanya menerima domain itera';
       if (!isElektro) message = 'maaf anda bukan mahasiswa elektro';
+      if (!isDomainValid) message = 'maaf hanya menerima domain itera';
       return sendRespObj(3, message, {});
     }
   }
@@ -62,7 +62,7 @@ export class UserService {
             email: find.email,
           },
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "12h" },
+          { expiresIn: '12h' },
         );
         res.cookie('accesToken', accesToken, {
           maxAge: 12 * 60 * 60 * 1000,
