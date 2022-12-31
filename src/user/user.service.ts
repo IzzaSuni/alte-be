@@ -62,20 +62,16 @@ export class UserService {
             email: find.email,
           },
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: '12h' },
+          { expiresIn: "12h" },
         );
-        res.cookie('accessToken', accesToken, {
+        res.cookie('accesToken', accesToken, {
           maxAge: 12 * 60 * 60 * 1000,
           httpOnly: true,
         });
-        return { status: 'success', code: 1, accesToken };
+        return sendRespObj(1, 'Sukses Login', accesToken);
       }
-      return { status: 'error', code: 2, message: 'email atau password salah' };
+      return sendRespObj(2, 'email atau password salah', {});
     }
-    return {
-      status: 'error',
-      code: 0,
-      message: 'email tidak ditemukan',
-    };
+    sendRespObj(0, 'email tidak terdaftar', {});
   }
 }
