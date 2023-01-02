@@ -15,39 +15,22 @@ export class UserService {
     const result = await this.userModel.find().exec();
     return result;
   }
-
   async createUser(payload: createUserParams) {
     const userFind = await this.getUser();
     const find = userFind.find((e) => e.email === payload.email);
     if (find) {
       return sendRespObj(2, 'Maaf email sudah terdaftar', {});
     }
-    const { isDomainValid, isElektro, angkatan, nim } = validation(
-      payload.email,
-    );
-
-    if (isDomainValid && isElektro) {
-      const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(payload.password, salt);
-      payload.password = hash;
-      const userPayload = new this.userModel({
-        ...payload,
-        angkatan: angkatan,
-        nim: nim,
-        created_at: new Date(),
-        role: null,
-        finger_id: null,
-      });
-      const result = await userPayload.save();
-      if (result)
-        return sendRespObj(1, 'Berhasil daftar silahkan login', result);
-      return sendRespObj(3, 'Maaf terjadi kesalahan', {});
-    } else {
-      let message = '';
-      if (!isElektro) message = 'maaf anda bukan mahasiswa elektro';
-      if (!isDomainValid) message = 'maaf hanya menerima domain itera';
-      return sendRespObj(3, message, {});
-    }
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(payload.password, salt);
+    payload.password = hash;
+    const userPayload = new this.userModel({
+      ...payload,
+      created_at: new Date(),
+    });
+    const result = await userPayload.save();
+    if (result) return sendRespObj(1, 'Berhasil daftar silahkan login', result);
+    return sendRespObj(3, 'Maaf terjadi kesalahan', {});
   }
 
   async login(payload: loginParam, res) {
