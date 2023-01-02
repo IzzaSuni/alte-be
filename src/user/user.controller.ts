@@ -1,10 +1,8 @@
-import { MailerService } from '@nestjs-modules/mailer';
 import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { main } from 'src/utils/func';
 import { CreateUserDto, LoginDto } from './dtos/CreateUser.dto';
 import { UserService } from './user.service';
-const sgMail = require('@sendgrid/mail');
+
 
 @Controller('user')
 export class UserController {
