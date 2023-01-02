@@ -7,6 +7,10 @@ export type createUserParams = {
   created_at: string;
   role: string;
 };
+export type updatePasswordParams = {
+  email: string;
+  password: string;
+};
 export type productParams = {
   product_name: string;
   warna: string;

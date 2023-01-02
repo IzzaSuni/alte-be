@@ -7,6 +7,7 @@ export class CreateUserDto {
   created_at: string;
   role: string;
   finger_id: number;
+  resetPasswordToken: string;
 }
 export class LoginDto {
   email: string;

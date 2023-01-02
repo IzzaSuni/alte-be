@@ -13,11 +13,11 @@ import { MailerModule } from '@nestjs-modules/mailer';
     UserModule,
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.sendgrid.net',
+        host: 'gmail',
         auth: {
-          user: 'apikey',
+          user: 'kmitera.cms@gmail.com',
           pass:
-            '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',
+            'Sunariadi180901',
         },
       },
     }),

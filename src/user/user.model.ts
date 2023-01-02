@@ -9,6 +9,7 @@ export const userSchema = new Mongoose.Schema({
   created_at: { type: Date },
   role: { type: String },
   finger_id: { type: Number },
+  resetPasswordToken: { type: String },
 });
 
 export interface User {
@@ -21,4 +22,5 @@ export interface User {
   created_at: string;
   role: string;
   finger_id: string;
+  resetPasswordToken: string;
 }
