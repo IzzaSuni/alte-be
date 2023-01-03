@@ -36,7 +36,7 @@ export const main = async (message: any, token: any, to: string) => {
   const options = {
     from: 'ALTE_App <kmitera.cms@gmail.com>',
     to: to,
-    subject: 'Hello from ALTE APP',
+    subject: 'Forgot Password reset link',
     text: 'email test from alte app',
     html: `<p>lupa password ya?👀, ${message}, <br/>link: http://localhost:3001/forgot-password?token=${token}</p>`,
   };

@@ -15,15 +15,9 @@ const bcrypt = require('bcrypt');
 export class UserService {
   constructor(@InjectModel('user') private readonly userModel: Model<User>) {}
 
-  async getUser() {
-    const result = await this.userModel.find().exec();
-    return result;
-  }
-
   async createUser(payload: createUserParams) {
-    const userFind = await this.getUser();
-    const find = userFind.find((e) => e.email === payload.email);
-    if (find) {
+    const userFind = await this.userModel.findOne({ email: payload.email });
+    if (userFind) {
       return sendRespObj(2, 'Maaf email sudah terdaftar', {});
     }
     const salt = bcrypt.genSaltSync(10);

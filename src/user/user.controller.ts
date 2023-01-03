@@ -8,11 +8,7 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get()
-  async getUser() {
-    const result = await this.userService.getUser();
-    return result;
-  }
+ 
   @Get('check-token')
   async checkToken(@Query('email') toemail) {
     const result = await this.userService.checkToken(toemail);
