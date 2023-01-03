@@ -38,7 +38,9 @@ export const main = async (message: any, token: any, to: string) => {
     to: to,
     subject: 'Forgot Password reset link',
     text: 'email test from alte app',
-    html: `<p>lupa password ya?👀, ${message}, <br/>link: https://alte.vercel.app/forgot-password?token=${token}</p>`,
+    html: `<div><h5>Harap jangan berikan link ini kesiapapun</h5>
+    <h6>Jika anda tidak merequest akses reset password, abaikan pesan ini</h6>
+    <p>lupa password ya?👀, ${message}, <br/>link: https://alte.vercel.app/forgot-password?token=${token}</p></div>`,
   };
 
   const oAuth2Client = new google.Auth.OAuth2Client(
