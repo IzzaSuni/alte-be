@@ -60,7 +60,6 @@ export class UserService {
 
   async checkToken(email) {
     const userFind = await this.userModel.findOne({ email: email });
-    console.log(userFind);
     if (userFind.resetPasswordToken) {
       return jwt.verify(
         userFind.resetPasswordToken,
