@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as google from 'googleapis';
+import * as jwt from 'jsonwebtoken';
 const nodemailer = require('nodemailer');
 export const credentials = {
   CLIENT_ID:
@@ -22,6 +23,15 @@ export const validation = (email: any) => {
     isDomainValid = true;
   }
   return { isDomainValid, isElektro, angkatan, nim };
+};
+
+export const jwtVerifySecret = (jwts: string) => {
+  let valid = null;
+  jwt.verify(jwts, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+    if (err) valid = false;
+    if (decoded) valid = true;
+  });
+  return { valid };
 };
 
 export const sendRespObj = (code: number, message: string, result: object) => {

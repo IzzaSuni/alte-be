@@ -8,10 +8,12 @@ export class CreateUserDto {
   role: string;
   finger_id: number;
   resetPasswordToken: string;
+  secret: string;
 }
 export class LoginDto {
   email: string;
   password: string;
+  token: string;
 }
 export class UpdateUserDto {
   email: string;

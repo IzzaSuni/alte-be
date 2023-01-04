@@ -6,10 +6,26 @@ export type createUserParams = {
   angkatan: number;
   created_at: string;
   role: string;
+  secret: string;
 };
+export type jadwalCreateParam = {
+  date: string;
+  time: string;
+  is_PraktikumSchedule: boolean;
+  location: string;
+  praktikan_group: object;
+  shift: object;
+  praktikum_name: string;
+  reason: string;
+  tools: object;
+  created_at: string;
+  edited_at: string;
+};
+
 export type updatePasswordParams = {
   email: string;
   password: string;
+  token: string;
 };
 export type productParams = {
   product_name: string;

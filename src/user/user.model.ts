@@ -4,10 +4,10 @@ export const userSchema = new Mongoose.Schema({
   fullname: { type: String, required: true },
   password: { type: String, required: true },
   email: { type: String, required: true },
-  angkatan: { type: Number },
-  nim: { type: Number },
+  angkatan: { type: Number, required: true },
+  nim: { type: Number, required: true },
   created_at: { type: Date },
-  role: { type: String },
+  role: { type: String, required: true },
   finger_id: { type: Number },
   resetPasswordToken: { type: String },
 });

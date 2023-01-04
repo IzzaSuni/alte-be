@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { main, sendRespObj, validation } from 'src/utils/func';
+import { jwtVerifySecret, main, sendRespObj, validation } from 'src/utils/func';
 import {
   createUserParams,
   loginParam,
@@ -15,8 +15,12 @@ const bcrypt = require('bcrypt');
 export class UserService {
   constructor(@InjectModel('user') private readonly userModel: Model<User>) {}
 
-  async createUser(payload: createUserParams) {
+  async createUser(payload: createUserParams, req) {
+    if (req.headers.origin !== 'https://alte.vercel.app')
+      return sendRespObj(10, 'HMMM no no no', {});
     const userFind = await this.userModel.findOne({ email: payload.email });
+    const { valid } = jwtVerifySecret(payload.secret);
+    if (!valid) return sendRespObj(4, 'Maaf proses registrasi tidak valid', {});
     if (userFind) {
       return sendRespObj(2, 'Maaf email sudah terdaftar', {});
     }
@@ -32,11 +36,12 @@ export class UserService {
     if (result) return sendRespObj(1, 'Berhasil daftar silahkan login', result);
     return sendRespObj(3, 'Maaf terjadi kesalahan', {});
   }
+
   async updatePassword(payload: updatePasswordParams) {
     const userFind = await this.userModel.findOne({ email: payload.email });
-    if (userFind) {
+    if (payload.token === userFind.resetPasswordToken) {
       return jwt.verify(
-        userFind.resetPasswordToken,
+        payload.token,
         process.env.EMAIL_TOKEN_SECRET,
         async (err, decoded) => {
           if (err) {
@@ -55,7 +60,7 @@ export class UserService {
         },
       );
     }
-    return sendRespObj(3, 'Maaf terjadi kesalahan', {});
+    return sendRespObj(3, 'Maaf Token tidak valid, atau sudah digunakan', {});
   }
 
   async checkToken(email) {
