@@ -7,8 +7,18 @@ export type createUserParams = {
   created_at: string;
   role: string;
   secret: string;
+  is_finger_registered: boolean;
+  _id: string;
+  profile: object;
 };
+
+export type updateUserParams = {
+  group_id: string;
+  finger_id: number;
+};
+
 export type jadwalCreateParam = {
+  id: string;
   date: string;
   time: string;
   is_PraktikumSchedule: boolean;
@@ -49,13 +59,7 @@ export type transactionParams = {
   status: string;
   user_id: number;
 };
-export type updateUserParams = {
-  email: string;
-  password: string;
-  phone: string;
-  username: string;
-  refreshToken: string;
-};
+
 export type loginParam = {
   email: string;
   password: string;

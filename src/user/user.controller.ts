@@ -1,14 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Query,
-  Res,
-  Req,
-} from '@nestjs/common';
-import { Request, Response } from 'express';
-import { CreateUserDto, LoginDto } from './dtos/CreateUser.dto';
+import { Body, Controller, Get, Post, Query, Put } from '@nestjs/common';
+import { CreateUserDto, LoginDto, UpdateUserDto } from './dtos/CreateUser.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -21,8 +12,13 @@ export class UserController {
     return result;
   }
   @Post()
-  async postuser(@Body() CreateUserDto: CreateUserDto, @Req() req: Request) {
-    const result = await this.userService.createUser(CreateUserDto, req);
+  async postUser(@Body() CreateUserDto: CreateUserDto) {
+    const result = await this.userService.createUser(CreateUserDto);
+    return result;
+  }
+  @Put()
+  async updateUser(@Body() UpdateUserDto: UpdateUserDto) {
+    const result = await this.userService.updateUser(UpdateUserDto);
     return result;
   }
   @Post('forgot')
@@ -36,11 +32,9 @@ export class UserController {
 export class Login {
   constructor(private userService: UserService) {}
   @Post()
-  async login(
-    @Body() LoginDto: LoginDto,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    const result = await this.userService.login(LoginDto, response);
+  async login(@Body() LoginDto: LoginDto) {
+    console.log(LoginDto);
+    const result = await this.userService.login(LoginDto);
     return result;
   }
 }

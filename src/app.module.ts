@@ -4,7 +4,17 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JadwalModule } from './jadwal/jadwal.module';
- 
+import { KomponenModule } from './komponen/komponen.module';
+import { PenilaianModule } from './penilaian/penilaian.module';
+import { ModuleModule } from './module/module.module';
+import { GroupModule } from './group/group.module';
+import { PraktikumModule } from './praktikum/praktikum.module';
+import { LocationModule } from './location/location.module';
+import { AbsenModule } from './absen/absen.module';
+import { EvaluasiModule } from './evaluasi/evaluasi.module';
+import { GatewayModule } from './gateway/gateway.module';
+import { ControlsStateModule } from './controls-state/controls-state.module';
+
 @Module({
   imports: [
     MongooseModule.forRoot(
@@ -12,6 +22,16 @@ import { JadwalModule } from './jadwal/jadwal.module';
     ),
     UserModule,
     JadwalModule,
+    KomponenModule,
+    PenilaianModule,
+    ModuleModule,
+    GroupModule,
+    PraktikumModule,
+    LocationModule,
+    AbsenModule,
+    EvaluasiModule,
+    GatewayModule,
+    ControlsStateModule,
   ],
   controllers: [AppController],
   providers: [AppService],

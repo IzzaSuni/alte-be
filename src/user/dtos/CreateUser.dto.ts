@@ -6,19 +6,19 @@ export class CreateUserDto {
   angkatan: number;
   created_at: string;
   role: string;
-  finger_id: number;
-  resetPasswordToken: string;
   secret: string;
+  is_finger_registered: boolean;
+  _id: string;
+  profile: object;
 }
 export class LoginDto {
   email: string;
   password: string;
   token: string;
+  resetPasswordToken: string;
+  profile: object;
 }
 export class UpdateUserDto {
-  email: string;
-  password: string;
-  phone: string;
-  username: string;
-  refreshToken: string;
+  group_id: string;
+  finger_id: number;
 }

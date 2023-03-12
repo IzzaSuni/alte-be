@@ -1,26 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { jwtVerifySecret, main, sendRespObj, validation } from 'src/utils/func';
+import { main, sendRespObj } from 'src/utils/func';
 import {
   createUserParams,
   loginParam,
   updatePasswordParams,
+  updateUserParams,
 } from 'src/utils/types';
 import { User } from './user.model';
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel('user') private readonly userModel: Model<User>) {}
 
-  async createUser(payload: createUserParams, req) {
-    if (req.headers.origin !== 'https://alte.vercel.app')
-      return sendRespObj(10, 'HMMM no no no', {});
+  async createUser(payload: createUserParams) {
+    // if (req.headers.origin !== 'https://alte.vercel.app')
+    //   return sendRespObj(10, 'HMMM no no no', {});
     const userFind = await this.userModel.findOne({ email: payload.email });
-    const { valid } = jwtVerifySecret(payload.secret);
-    if (!valid) return sendRespObj(4, 'Maaf proses registrasi tidak valid', {});
+    const findAll = await this.userModel.find();
+    const length = findAll.length;
     if (userFind) {
       return sendRespObj(2, 'Maaf email sudah terdaftar', {});
     }
@@ -31,6 +32,8 @@ export class UserService {
       ...payload,
       created_at: new Date(),
       resetPasswordToken: null,
+      finger_id: length + 1,
+      is_finger_registered: false,
     });
     const result = await userPayload.save();
     if (result) return sendRespObj(1, 'Berhasil daftar silahkan login', result);
@@ -39,7 +42,7 @@ export class UserService {
 
   async updatePassword(payload: updatePasswordParams) {
     const userFind = await this.userModel.findOne({ email: payload.email });
-    if (payload.token === userFind.resetPasswordToken) {
+    if (payload.token === userFind?.resetPasswordToken) {
       return jwt.verify(
         payload.token,
         process.env.EMAIL_TOKEN_SECRET,
@@ -63,6 +66,10 @@ export class UserService {
     return sendRespObj(3, 'Maaf Token tidak valid, atau sudah digunakan', {});
   }
 
+  async updateUser(payload: updateUserParams) {
+    console.log(payload);
+  }
+
   async checkToken(email) {
     const userFind = await this.userModel.findOne({ email: email });
     if (userFind.resetPasswordToken) {
@@ -84,22 +91,25 @@ export class UserService {
     return sendRespObj(0, 'Token Tidak Ada', {});
   }
 
-  async login(payload: loginParam, res) {
+  async login(payload: loginParam) {
     const userFind = await this.userModel.findOne({ email: payload.email });
     if (userFind) {
       const valid = bcrypt.compareSync(payload.password, userFind.password);
+
+      const jwtReturnVal = {
+        fullname: userFind.fullname,
+        email: userFind.email,
+        id: userFind._id,
+        profile: userFind?.profile,
+        role: userFind?.role,
+      };
+      const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
+      const jwtConfig = {
+        expiresIn: '12h',
+      };
+
       if (valid) {
-        const accesToken = jwt.sign(
-          {
-            fullname: userFind.fullname,
-            email: userFind.email,
-          },
-          process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: '12h' },
-        );
-        res.cookie('accesToken', accesToken, {
-          maxAge: 12 * 60 * 60 * 1000,
-        });
+        const accesToken = jwt.sign(jwtReturnVal, jwtSecret, jwtConfig);
         return sendRespObj(1, 'Sukses Login', accesToken);
       }
       return sendRespObj(2, 'email atau password salah', {});
@@ -120,14 +130,14 @@ export class UserService {
       userFind.resetPasswordToken = emailToken;
       await userFind.save();
       return await main('silahkan akses link berikut', emailToken, to)
-        .then((e) => {
+        .then(() => {
           return sendRespObj(
             1,
             'Link reset sudah terkirim ke email, silahkan dicek',
             {},
           );
         })
-        .catch((err) => sendRespObj(0, 'Maaf terjadi kesalahan', {}));
+        .catch(() => sendRespObj(0, 'Maaf terjadi kesalahan', {}));
     }
     return sendRespObj(0, 'Maaf email tersebut belum terdaftar', {});
   }

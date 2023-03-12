@@ -1,6 +1,6 @@
-// @ts-nocheck
 import * as google from 'googleapis';
 import * as jwt from 'jsonwebtoken';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodemailer = require('nodemailer');
 export const credentials = {
   CLIENT_ID:
@@ -16,7 +16,7 @@ export const validation = (email: any) => {
   const domain = email.slice(email.indexOf('@') + 1, email.length);
   const nim = email.slice(email.indexOf('.') + 1, email.indexOf('@'));
   const allowedDomain = 'itera.ac.id';
-  let angkatan = `20${nim[1]}${nim[2]}`;
+  const angkatan = `20${nim[1]}${nim[2]}`;
   const isElektro = Number(nim.slice(3, 6)) === 130;
 
   if (domain.includes(allowedDomain)) {
@@ -34,7 +34,11 @@ export const jwtVerifySecret = (jwts: string) => {
   return { valid };
 };
 
-export const sendRespObj = (code: number, message: string, result: object) => {
+export const sendRespObj = (
+  code: number,
+  message: string,
+  result: object = {},
+) => {
   return {
     status: code === 1 ? 'success' : 'error',
     code,

@@ -7,9 +7,17 @@ export const userSchema = new Mongoose.Schema({
   angkatan: { type: Number, required: true },
   nim: { type: Number, required: true },
   created_at: { type: Date },
+  edited_at: { type: Date },
   role: { type: String, required: true },
-  finger_id: { type: Number },
+  finger_id: {
+    type: Number,
+  },
+  is_finger_registered: {
+    type: Boolean,
+    default: false,
+  },
   resetPasswordToken: { type: String },
+  profile: { type: Object },
 });
 
 export interface User {
@@ -19,8 +27,10 @@ export interface User {
   email: string;
   angkatan: number;
   nim: number;
-  created_at: string;
   role: string;
-  finger_id: string;
+  finger_id: object;
   resetPasswordToken: string;
+  created_at: string;
+  edited_at: string;
+  profile: object;
 }
