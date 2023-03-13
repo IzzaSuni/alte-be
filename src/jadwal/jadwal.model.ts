@@ -12,13 +12,14 @@ export const jadwalSchema = new Mongoose.Schema({
   aproved: { type: Boolean, required: true },
   group: [{ type: SchemaTypes.ObjectId, ref: 'Group' }],
   komponen_id: [{ type: SchemaTypes.ObjectId, ref: 'Komponen' }],
+  // tools: [{ type: SchemaTypes.ObjectId, ref: 'komponen' }],
   created_at: { type: Date },
   edited_at: { type: Date },
 });
 
 export interface Jadwal {
   id: string;
-  date: string;
+  date: any;
   time: string;
   is_PraktikumSchedule: boolean;
   location: string;
@@ -32,7 +33,7 @@ export interface Jadwal {
 }
 export type JadwalParams = {
   id: string;
-  date: string;
+  date: any;
   time: string;
   is_PraktikumSchedule: boolean;
   location: string;

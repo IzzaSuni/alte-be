@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import { createJadwalDto } from '../dto/jadwal.Dto';
@@ -21,8 +22,8 @@ export class ControllerController {
   }
 
   @Get('find')
-  async findJadwalBy(@Param() param) {
-    return this.jadwalService.findJadwalBy(param);
+  async findJadwalBy(@Query('month') month: number) {
+    return this.jadwalService.findJadwalBy(month);
   }
 
   @Delete()

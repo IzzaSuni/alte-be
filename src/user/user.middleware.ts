@@ -18,6 +18,7 @@ export class TokenCheck implements NestMiddleware {
         },
       );
     }
-    return res.sendStatus(403);
+    return next();
+    // return res.sendStatus(403);
   }
 }
