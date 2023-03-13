@@ -3,16 +3,13 @@ import {
   Controller,
   Delete,
   Get,
-  Header,
   Post,
   Put,
   Query,
-  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Response } from 'express';
 import { ModuleDto } from '../module.model';
 import { ServiceService } from '../service/service.service';
 
@@ -26,8 +23,8 @@ export class ControllerController {
   }
 
   @Get('download')
-  async downloadModule(@Res() res: any, @Query('id') moduleId: string) {
-    return await this.SERVICE.Download(res, moduleId);
+  downloadModule(@Query('id') moduleId: string) {
+    return this.SERVICE.Download(moduleId);
   }
 
   @Post()
@@ -53,10 +50,5 @@ export class ControllerController {
   @Delete()
   deleteFile(@Query('id') moduleId: string) {
     return this.SERVICE.DELETE(moduleId);
-  }
-
-  @Get('download')
-  download(@Res() res: Response, @Query('mId') moduleId: string) {
-    this.SERVICE.Download(moduleId, res);
   }
 }

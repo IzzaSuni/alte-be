@@ -1,11 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Praktikum } from 'src/praktikum/praktikum.model';
 import { sendRespObj } from 'src/utils/func';
+import { buffer } from 'stream/consumers';
 import { Module, ModuleFile, ModuleParam } from '../module.model';
-import { writeFile } from 'fs';
-import * as tmp from 'tmp';
 const message = {
   praktikumNotFound:
     'Maaf Praktikum belum terdaftar, silahkan input praktikum terlebih dahulu',
@@ -85,8 +84,8 @@ export class ServiceService {
     return sendRespObj(0, 'Maaf terjadi kesalahan', {});
   }
 
-  async Download(res, moduleId) {
+  async Download(moduleId) {
     const module: any = await this.FILE.findById(moduleId);
-    return res.download(`data:application/pdf;base64,${module?.file?.buffer}`);
+    return sendRespObj(1, 'oke', module);
   }
 }
