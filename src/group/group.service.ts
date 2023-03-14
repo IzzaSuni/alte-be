@@ -18,7 +18,6 @@ export class GroupService {
       created_at: new Date(),
       edited_at: null,
     });
-    console.log(newObj);
     const res = await newObj.save();
     if (res) return sendRespObj(1, 'Berhasil menambah Praktikum', newObj);
     else sendRespObj(0, 'Maaf terjadi kesalahan', {});

@@ -33,7 +33,6 @@ export class Login {
   constructor(private userService: UserService) {}
   @Post()
   async login(@Body() LoginDto: LoginDto) {
-    console.log(LoginDto);
     const result = await this.userService.login(LoginDto);
     return result;
   }

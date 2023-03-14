@@ -32,7 +32,6 @@ export class jadwalService {
         new Date(holiday.start.date).getFullYear() === new Date().getFullYear(),
     );
 
-    console.log(findHoliday);
     return [...find, ...findHoliday];
   }
 

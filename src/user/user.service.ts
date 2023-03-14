@@ -66,9 +66,7 @@ export class UserService {
     return sendRespObj(3, 'Maaf Token tidak valid, atau sudah digunakan', {});
   }
 
-  async updateUser(payload: updateUserParams) {
-    console.log(payload);
-  }
+  async updateUser(payload: updateUserParams) {}
 
   async checkToken(email) {
     const userFind = await this.userModel.findOne({ email: email });
