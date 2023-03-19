@@ -41,17 +41,24 @@ export class KomponenDetailController {
         0,
         'Maaf komponen dengan nilai tersebut sudah terdaftar',
       );
-    const newDetail = new this.DETAILL({
-      amount: payload.amount,
-      available_amount: payload.amount,
-      value: payload.value,
-      edited_log: null,
-    });
+    const komponen = await this.Komponen.findById(payload.komponen_id);
+    if (komponen) {
+      const newDetail = new this.DETAILL({
+        amount: payload.amount,
+        available_amount: payload.available_amount,
+        value: payload.value,
+        edited_log: null,
+        komponen_id: payload.komponen_id,
+      });
+      komponen.komponen_detail.push(newDetail);
+      await komponen.save();
+      const res = await newDetail.save();
+      if (res) return sendRespObj(1, 'Berhasil membuat komponen', newDetail);
+    }
 
-    const res = await newDetail.save();
-    if (res) return sendRespObj(1, 'Berhasil membuat komponen', newDetail);
     return sendRespObj(0, 'Maaf terjadi kesalahan');
   }
+
   @Get('find')
   async findDetail(@Query('id') id: string) {
     const find = await this.Komponen.findById(id);
@@ -66,7 +73,10 @@ export class KomponenDetailController {
     @Query('id') id: string,
     @Body() payload: editKomponenDetailParam,
   ) {
-    const find = await this.DETAILL.findById(id);
+    const komponens = await this.DETAILL.find({
+      komponen_id: payload.komponen_id,
+    });
+    const find = komponens.find((komponen) => komponen.id === id);
 
     if (find) {
       const editedLog = {
@@ -77,13 +87,33 @@ export class KomponenDetailController {
         user_id: find.edited_log.user_id,
         notes: find.edited_log.notes,
       };
+
+      const calculateAvalilable = () => {
+        if (payload.amount > find.amount) {
+          return payload.amount - find.amount;
+        }
+        return -(find.amount - payload.amount);
+      };
+
+      if (!payload.available_amount) {
+        find.available_amount = find?.available_amount + calculateAvalilable();
+      } else {
+        find.available_amount = payload.available_amount;
+      }
+      find.edited_at = `${moment().format('')}`;
       find.value = payload.value;
-      find.available_amount = payload.available_amount;
       find.edited_log.before.push({ ...editedLog });
       find.edited_log.date = `${moment().format()}`;
       find.edited_log.notes = payload.notes;
       find.edited_log.user_id = payload.user_id;
+      find.amount = payload.amount;
 
+      let count = 0;
+      komponens.forEach((komponen) => (count += komponen.amount));
+      console.log(count);
+      await this.Komponen.findByIdAndUpdate(payload.komponen_id, {
+        total: count,
+      });
       await find.save();
       return sendRespObj(1, 'komponen detail berhasil diedit', find);
     }
@@ -94,7 +124,17 @@ export class KomponenDetailController {
   @Delete('del')
   async deleteKomponen(@Query('id') id: string) {
     const find = await this.DETAILL.findByIdAndDelete(id);
-    if (find) return sendRespObj(1, 'Berhasil dihapus', find);
+    if (find) {
+      const praktikumId = find.komponen_id;
+      const res = await this.Komponen.findByIdAndUpdate(
+        praktikumId,
+        {
+          $pull: { komponen_detail: { _id: id } },
+        },
+        { new: true },
+      ).exec();
+      if (res) return sendRespObj(1, 'Berhasil dihapus', find);
+    }
     return sendRespObj(0, 'Data tidak ditemukan');
   }
 }

@@ -3,7 +3,7 @@ import { PraktikumParam } from 'src/praktikum/praktikum.model';
 import { userParam } from 'src/user/user.model';
 
 export const groupSchema = new Mongoose.Schema({
-  group: { type: Number, required: true },
+  group: { type: String, required: true },
   praktikum: { type: SchemaTypes.ObjectId, ref: 'praktikum' },
   users: [{ type: SchemaTypes.ObjectId, ref: 'user' }],
   created_at: { type: Date },
@@ -11,17 +11,17 @@ export const groupSchema = new Mongoose.Schema({
 });
 
 export interface Group {
-  group: number;
+  group: string;
   praktikum: PraktikumParam;
   user: Array<userParam>;
 }
 export type GroupParam = {
-  group: number;
+  group: string;
   praktikum: PraktikumParam;
   user: Array<userParam>;
 };
 export class GroupDto {
-  group: number;
+  group: string;
   praktikum: PraktikumParam;
   user: Array<userParam>;
 }

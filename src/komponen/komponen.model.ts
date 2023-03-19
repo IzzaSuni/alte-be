@@ -6,6 +6,7 @@ export const komponenSchema = new Mongoose.Schema({
   isPersist: { type: Boolean, required: true },
   komponen_detail: [{ type: SchemaTypes.ObjectId, ref: 'komponen_detail' }],
   edited_at: { type: String },
+  total: { type: Number },
 });
 
 export interface Komponen {

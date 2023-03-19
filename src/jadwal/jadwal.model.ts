@@ -10,12 +10,12 @@ export const jadwalSchema = new Mongoose.Schema({
   location: { type: String, required: true },
   praktikum: { type: String, required: true },
   reason: { type: String, required: true },
-  aproved: { type: Boolean, required: true },
   group: [{ type: SchemaTypes.ObjectId, ref: 'Group' }],
-  komponens: [{ type: SchemaTypes.ObjectId, ref: 'Komponen' }],
+  peminjaman_id: [{ type: SchemaTypes.ObjectId, ref: 'Peminjaman' }],
+  aproved: { type: Boolean, required: true },
+  table: { type: String },
   created_at: { type: Date },
   edited_at: { type: Date },
-  table: { type: String },
 });
 
 export interface Jadwal {
@@ -26,10 +26,10 @@ export interface Jadwal {
   is_PraktikumSchedule: boolean;
   location: string;
   praktikum: PraktikumParam;
-  group: GroupParam;
+  group: Array<GroupParam>;
   aproved: boolean;
   reason: string;
-  komponens: object;
+  peminjaman_id: object;
   created_at: string;
   edited_at: string;
   table: string;
@@ -44,11 +44,11 @@ export type JadwalParams = {
   reason: string;
   created_at: string;
   edited_at: string;
-  group: GroupParam;
+  group: Array<GroupParam>;
   aproved: boolean;
   start_at: string;
   end_at: string;
-  komponens: object;
+  peminjaman_id: object;
   table: string;
 };
 
@@ -61,10 +61,10 @@ export class JadwalDTO {
   reason: string;
   created_at: string;
   edited_at: string;
-  group: GroupParam;
+  group: Array<GroupParam>;
   aproved: boolean;
   start_at: string;
   end_at: string;
-  komponens: object;
+  peminjaman_id: object;
   table: string;
 }

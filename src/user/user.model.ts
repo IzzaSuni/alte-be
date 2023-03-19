@@ -31,7 +31,10 @@ export interface User {
   email: string;
   angkatan: number;
   nim: number;
-  role: string;
+  role: {
+    main: string;
+    secondary: string;
+  };
   finger_id: object;
   resetPasswordToken: string;
   created_at: string;
@@ -47,7 +50,10 @@ export type userParam = {
   email: string;
   angkatan: number;
   nim: number;
-  role: string;
+  role: {
+    main: string;
+    secondary: string;
+  };
   finger_id: object;
   resetPasswordToken: string;
   created_at: string;

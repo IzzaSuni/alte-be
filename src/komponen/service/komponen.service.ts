@@ -12,7 +12,7 @@ export class komponenService {
   ) {}
 
   async getAllKomponen() {
-    return this.KomponenModel.find().exec();
+    return this.KomponenModel.find().populate('komponen_detail').exec();
   }
 
   async postKomponen(payload: KomponenParam) {
@@ -40,9 +40,12 @@ export class komponenService {
   }
 
   async deleteKomponen(id: string) {
-    return await this.KomponenModel.findByIdAndDelete(id, (err, docs) => {
-      if (err) return sendRespObj(0, 'Maaf terjadi kesalahan', err);
-      return sendRespObj(1, 'Berhasil menghapus dokumen', docs);
-    });
+    try {
+      const res = await this.KomponenModel.findByIdAndDelete(id);
+      if (res) return sendRespObj(1, 'Berhasil menghapus dokumen', res);
+      return sendRespObj(0, 'maaf dokumen tidak ada');
+    } catch (err) {
+      return sendRespObj(0, 'Maaf terjadi kesalahan', err);
+    }
   }
 }

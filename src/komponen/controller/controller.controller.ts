@@ -23,7 +23,7 @@ export class ControllerController {
     return this.komponenServices.postKomponen(komponenDto);
   }
   @Delete()
-  async deleteKomponen(@Body() id: string) {
+  async deleteKomponen(@Query('id') id: string) {
     return this.komponenServices.deleteKomponen(id);
   }
   @Put()

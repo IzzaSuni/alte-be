@@ -29,28 +29,30 @@ type edited = {
   user_id: string;
   notes: string;
   date: string;
-  edited_log: { before: Array<editKomponenDetailParam> };
   value: string;
   amount: number;
   available_amount: number;
-  komponen: KomponenParam;
+  komponen_id: KomponenParam;
+  edited_log: { before: Array<editKomponenDetailParam> };
 };
 
 export interface KomponenDetail {
+  _id: string;
   value: string;
   amount: number;
   available_amount: number;
-  edited_log: edited;
   edited_at: string;
-  komponen: KomponenParam;
+  komponen_id: KomponenParam;
+  edited_log: edited;
 }
 
 export type KomponenDetailParam = {
+  _id: string;
   value: string;
   amount: number;
   available_amount: number;
   edited_log: edited;
-  komponen: KomponenParam;
+  komponen_id: KomponenParam;
 };
 
 export type editKomponenDetailParam = {
@@ -61,7 +63,7 @@ export type editKomponenDetailParam = {
   user_id: string;
   edited_at: string;
   notes: string;
-  komponen: KomponenParam;
+  komponen_id: KomponenParam;
 };
 
 export class KomponenDetailDto {
@@ -69,5 +71,5 @@ export class KomponenDetailDto {
   amount: number;
   available_amount: number;
   edited_log: edited;
-  komponen: KomponenParam;
+  komponen_id: KomponenParam;
 }

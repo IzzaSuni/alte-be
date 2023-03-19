@@ -17,6 +17,7 @@ import { ControlsStateModule } from './controls-state/controls-state.module';
 import { TableModule } from './table/table.module';
 import { KomponenDetailModule } from './komponen_detail/komponen_detail.module';
 import { PraktikansModule } from './praktikans/praktikans.module';
+import { PeminjamanModule } from './peminjaman/peminjaman.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { PraktikansModule } from './praktikans/praktikans.module';
     TableModule,
     KomponenDetailModule,
     PraktikansModule,
+    PeminjamanModule,
   ],
   controllers: [AppController],
   providers: [AppService],
