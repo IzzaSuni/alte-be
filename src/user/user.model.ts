@@ -8,7 +8,10 @@ export const userSchema = new Mongoose.Schema({
   nim: { type: Number, required: true },
   created_at: { type: Date },
   edited_at: { type: Date },
-  role: { type: String, required: true },
+  role: {
+    main: { type: String, required: true },
+    secondary: { type: String },
+  },
   finger_id: {
     type: Number,
   },
@@ -18,6 +21,7 @@ export const userSchema = new Mongoose.Schema({
   },
   resetPasswordToken: { type: String },
   profile: { type: Object },
+  socket_id: { type: String },
 });
 
 export interface User {
@@ -32,5 +36,22 @@ export interface User {
   resetPasswordToken: string;
   created_at: string;
   edited_at: string;
+  socket_id: string;
   profile: object;
 }
+
+export type userParam = {
+  id: string;
+  fullname: string;
+  password: string;
+  email: string;
+  angkatan: number;
+  nim: number;
+  role: string;
+  finger_id: object;
+  resetPasswordToken: string;
+  created_at: string;
+  edited_at: string;
+  socket_id: string;
+  profile: object;
+};

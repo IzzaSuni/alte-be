@@ -24,7 +24,7 @@ export class ServiceService {
     else sendRespObj(0, 'Maaf terjadi kesalahan', {});
   }
 
-  async EDIT(payload: penilaianParam) {
+  async EDIT(payload) {
     return await this.Models.findByIdAndUpdate(
       payload.id,
       {

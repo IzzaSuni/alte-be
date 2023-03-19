@@ -1,21 +1,36 @@
-import Mongoose from 'mongoose';
-import { userSchema } from 'src/user/user.model';
+import Mongoose, { SchemaTypes } from 'mongoose';
+import { JadwalParams } from 'src/jadwal/jadwal.model';
 
 export const absenSchema = new Mongoose.Schema({
-  user: userSchema,
-  clock_in: { type: Date, required: true },
-  clock_out: { type: Date },
+  data: {
+    user: { type: SchemaTypes.ObjectId, ref: 'user' },
+    clock_in: { type: Date, required: true },
+    clock_out: { type: Date },
+  },
+  jadwal_id: { type: SchemaTypes.ObjectId, ref: 'jadwal' },
 });
 
 export interface Absen {
-  clock_in: string;
-  clock_out: string;
+  data: {
+    user: string;
+    clock_in: string;
+    clock_out: string;
+  };
+  jadwal_id: JadwalParams;
 }
 export type AbsenParam = {
-  clock_in: string;
-  clock_out: string;
+  data: {
+    user: string;
+    clock_in: string;
+    clock_out: string;
+  };
+  jadwal_id: JadwalParams;
 };
 export class AbsenDto {
-  clock_in: string;
-  clock_out: string;
+  data: {
+    user: string;
+    clock_in: string;
+    clock_out: string;
+  };
+  jadwal_id: JadwalParams;
 }

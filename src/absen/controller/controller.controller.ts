@@ -17,8 +17,4 @@ export class ControllerController {
   ) {
     return this.SERVICE.POST(PraktikumDto, id);
   }
-  @Put()
-  async editKomponen(@Body() PraktikumDto: AbsenDto, @Query('id') id: string) {
-    return this.SERVICE.EDIT(PraktikumDto, id);
-  }
 }

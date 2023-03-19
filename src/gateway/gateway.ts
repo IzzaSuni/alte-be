@@ -8,7 +8,7 @@ import {
 } from '@nestjs/websockets';
 import * as moment from 'moment';
 import { Model } from 'mongoose';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { ControlState } from 'src/controls-state/controls-state.model';
 import { Group, GroupParam } from 'src/group/group.model';
 import { Jadwal, JadwalParams } from 'src/jadwal/jadwal.model';
@@ -27,11 +27,19 @@ export class AlteGateway implements OnModuleInit {
   @WebSocketServer()
   server: Server;
   onModuleInit() {
-    this.server.on('connection', (socket) => {
-      console.log(socket.id);
-      console.log('connected');
+    this.server.on('connection', (socket: Socket) => {
+      socket.on('disconnect', (reason) => {
+        console.log(reason, socket.id);
+      });
     });
   }
+
+  // onDisconnect() {
+  //   this.server.on('disconnect', (socket) => {
+  //     console.log(socket);
+  //     this.server.di;
+  //   });
+  // }
 
   // ir or relay
   @SubscribeMessage('control')
@@ -89,7 +97,10 @@ export class AlteGateway implements OnModuleInit {
     let payload = '';
     const { fingerId } = body;
     const currentDate: any = moment(new Date()).format('DD MMMM YYYY');
-
+    const jadwals = await this.Jadwal.findOne({
+      date: currentDate,
+      'group.users.finger_id': fingerId,
+    });
     // find user by finger id
     const searchUserParam = {
       finger_id: Number(fingerId),
@@ -117,20 +128,19 @@ export class AlteGateway implements OnModuleInit {
       userGroup.map(
         async ({
           praktikum: praktikumFromGroup,
-          shift: shiftFromGroup,
           group: groupFromGroup,
         }: GroupParam) => {
           const findJadwal = todayJadwal.find(
             ({
-              praktikum_name: praktikumFromJadwal,
+              praktikum: praktikumFromJadwal,
               group: groupFromJadwal,
             }: JadwalParams) => {
               const isPraktikumMatch =
-                praktikumFromJadwal === praktikumFromGroup.praktikum_name;
+                praktikumFromJadwal.praktikum_name ===
+                praktikumFromGroup.praktikum_name;
               const isGroupMatch = groupFromGroup === groupFromJadwal.group;
-              const isShiftMatch = shiftFromGroup === groupFromJadwal.shift;
 
-              return isPraktikumMatch && isGroupMatch && isShiftMatch;
+              return isPraktikumMatch && isGroupMatch;
             },
           );
           if (findJadwal) {

@@ -1,10 +1,10 @@
-import Mongoose from 'mongoose';
+import Mongoose, { SchemaTypes } from 'mongoose';
 import { PraktikumParam } from 'src/praktikum/praktikum.model';
 
-export const moduleSchema = new Mongoose.Schema({
-  module_name: { type: String },
-  module_no: { type: Number },
-  praktikum: { type: Object },
+export const praktikumDetailSchema = new Mongoose.Schema({
+  module_name: { type: String, required: true },
+  module_no: { type: Number, required: true },
+  praktikum: { type: SchemaTypes.ObjectId, ref: 'Praktikum', required: true },
   file_id: { type: Object },
 });
 export const fileSchema = new Mongoose.Schema({
@@ -15,21 +15,21 @@ export interface ModuleFile {
   file: object;
 }
 
-export interface Module {
+export interface praktikumDetail {
   module_name: string;
   module_no: number;
   praktikum: PraktikumParam;
   file_id: string;
 }
 
-export type ModuleParam = {
+export type praktikumDetailParam = {
   module_name: string;
   id: string;
   module_no: number;
   praktikum: PraktikumParam;
 };
 
-export class ModuleDto {
+export class praktikumDetailDto {
   module_name: string;
   id: string;
   module_no: number;

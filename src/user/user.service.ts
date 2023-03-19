@@ -6,7 +6,6 @@ import {
   createUserParams,
   loginParam,
   updatePasswordParams,
-  updateUserParams,
 } from 'src/utils/types';
 import { User } from './user.model';
 import * as jwt from 'jsonwebtoken';
@@ -34,6 +33,7 @@ export class UserService {
       resetPasswordToken: null,
       finger_id: length + 1,
       is_finger_registered: false,
+      role: { main: payload.role },
     });
     const result = await userPayload.save();
     if (result) return sendRespObj(1, 'Berhasil daftar silahkan login', result);
@@ -65,8 +65,6 @@ export class UserService {
     }
     return sendRespObj(3, 'Maaf Token tidak valid, atau sudah digunakan', {});
   }
-
-  async updateUser(payload: updateUserParams) {}
 
   async checkToken(email) {
     const userFind = await this.userModel.findOne({ email: email });

@@ -1,33 +1,30 @@
-import Mongoose from 'mongoose';
+import Mongoose, { SchemaTypes } from 'mongoose';
+import { KomponenDetailParam } from 'src/komponen_detail/komponen.model';
 
 export const komponenSchema = new Mongoose.Schema({
   name: { type: String, required: true },
   isPersist: { type: Boolean, required: true },
-  amount: { type: Number, required: true },
-  komponen_code: { type: String, required: true },
-  available: { type: Number, required: true },
+  komponen_detail: [{ type: SchemaTypes.ObjectId, ref: 'komponen_detail' }],
+  edited_at: { type: String },
 });
 
 export interface Komponen {
   name: string;
   isPersist: boolean;
-  amount: number;
-  komponen_code: string;
-  available: number;
+  komponen_detail: Array<KomponenDetailParam>;
+  edited_at: string;
 }
+
 export type KomponenParam = {
-  id: string;
   name: string;
   isPersist: boolean;
-  amount: number;
-  komponen_code: string;
-  available: number;
+  komponen_detail: Array<KomponenDetailParam>;
+  edited_at: string;
 };
+
 export class KomponenDto {
-  id: string; 
   name: string;
   isPersist: boolean;
-  amount: number;
-  komponen_code: string;
-  available: number;
+  komponen_detail: Array<KomponenDetailParam>;
+  edited_at: string;
 }

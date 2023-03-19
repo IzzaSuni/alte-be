@@ -1,39 +1,35 @@
-import { Body, Controller, Get, Post, Query, Put } from '@nestjs/common';
-import { CreateUserDto, LoginDto, UpdateUserDto } from './dtos/CreateUser.dto';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { CreateUserDto, LoginDto } from './dtos/CreateUser.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userServices: UserService) {}
 
   @Get('check-token')
   async checkToken(@Query('email') toemail) {
-    const result = await this.userService.checkToken(toemail);
+    const result = await this.userServices.checkToken(toemail);
     return result;
   }
+
   @Post()
-  async postUser(@Body() CreateUserDto: CreateUserDto) {
-    const result = await this.userService.createUser(CreateUserDto);
-    return result;
-  }
-  @Put()
-  async updateUser(@Body() UpdateUserDto: UpdateUserDto) {
-    const result = await this.userService.updateUser(UpdateUserDto);
+  async postUser(@Body() CreateUserDtos: CreateUserDto) {
+    const result = await this.userServices.createUser(CreateUserDtos);
     return result;
   }
   @Post('forgot')
-  async updatePassword(@Body() LoginDto: LoginDto) {
-    const result = await this.userService.updatePassword(LoginDto);
+  async updatePassword(@Body() LoginDtos: LoginDto) {
+    const result = await this.userServices.updatePassword(LoginDtos);
     return result;
   }
 }
 
 @Controller('login')
 export class Login {
-  constructor(private userService: UserService) {}
+  constructor(private userServices: UserService) {}
   @Post()
-  async login(@Body() LoginDto: LoginDto) {
-    const result = await this.userService.login(LoginDto);
+  async login(@Body() LoginDtos: LoginDto) {
+    const result = await this.userServices.login(LoginDtos);
     return result;
   }
 }

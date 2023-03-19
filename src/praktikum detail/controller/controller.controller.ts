@@ -10,7 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ModuleDto } from '../module.model';
+import { praktikumDetailDto } from '../module.model';
 import { ServiceService } from '../service/service.service';
 
 @Controller('module')
@@ -22,6 +22,11 @@ export class ControllerController {
     return this.SERVICE.GET();
   }
 
+  @Get('details')
+  findModule(@Query('id') id: string) {
+    return this.SERVICE.findModulPraktikum(id);
+  }
+
   @Get('download')
   downloadModule(@Query('id') moduleId: string) {
     return this.SERVICE.Download(moduleId);
@@ -31,20 +36,20 @@ export class ControllerController {
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(
     @UploadedFile() file: Express.Multer.File,
-    @Body() moduleDto: ModuleDto,
+    @Body() praktikumDetailDtos: praktikumDetailDto,
     @Query('id') praktikumId: string,
   ) {
-    return this.SERVICE.POST(file, moduleDto, praktikumId);
+    return this.SERVICE.POST(file, praktikumDetailDtos, praktikumId);
   }
 
   @Put()
   @UseInterceptors(FileInterceptor('file'))
   editFile(
     @UploadedFile() file: Express.Multer.File,
-    @Body() moduleDto: ModuleDto,
+    @Body() praktikumDetailDtos: praktikumDetailDto,
     @Query('id') moduleId: string,
   ) {
-    return this.SERVICE.EDIT(file, moduleDto, moduleId);
+    return this.SERVICE.EDIT(file, praktikumDetailDtos, moduleId);
   }
 
   @Delete()

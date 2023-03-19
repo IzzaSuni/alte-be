@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as moment from 'moment';
 import { Model } from 'mongoose';
 import { sendRespObj } from 'src/utils/func';
 import { Komponen, KomponenParam } from '../komponen.model';
@@ -17,20 +18,19 @@ export class komponenService {
   async postKomponen(payload: KomponenParam) {
     const newObj = new this.KomponenModel({
       ...payload,
-      created_at: new Date(),
-      edited_at: null,
     });
+    newObj.edited_at = `${moment().format('')}`;
     const res = await newObj.save();
     if (res) return sendRespObj(1, 'Berhasil menambah komponen', newObj);
     else sendRespObj(0, 'Maaf terjadi kesalahan', {});
   }
 
-  async editKomponen(payload: KomponenParam) {
+  async editKomponen(id: string, payload: KomponenParam) {
     return await this.KomponenModel.findByIdAndUpdate(
-      payload.id,
+      id,
       {
         ...payload,
-        edited_at: new Date(),
+        edited_log: `${moment().format('')}`,
       },
       (err, docs) => {
         if (err) return sendRespObj(0, 'Maaf terjadi kesalahan', {});

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ServiceService } from './service/service.service';
 import { ControllerController } from './controller/controller.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { fileSchema, moduleSchema } from './module.model';
+import { fileSchema, praktikumDetailSchema } from './module.model';
 import { PraktikumSchema } from 'src/praktikum/praktikum.model';
 
 @Module({
@@ -10,7 +10,7 @@ import { PraktikumSchema } from 'src/praktikum/praktikum.model';
   controllers: [ControllerController],
   imports: [
     MongooseModule.forFeature([
-      { name: 'Module', schema: moduleSchema },
+      { name: 'Module', schema: praktikumDetailSchema },
       { name: 'Praktikum', schema: PraktikumSchema },
       { name: 'ModuleFile', schema: fileSchema },
     ]),

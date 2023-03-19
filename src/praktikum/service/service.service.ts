@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Module } from 'src/module/module.model';
+import { praktikumDetail } from 'src/praktikum detail/module.model';
 import { sendRespObj } from 'src/utils/func';
 import { Praktikum, PraktikumParam } from '../praktikum.model';
 
@@ -9,7 +9,7 @@ import { Praktikum, PraktikumParam } from '../praktikum.model';
 export class ServiceService {
   constructor(
     @InjectModel('Praktikum') private readonly PRAKTIKUM: Model<Praktikum>,
-    @InjectModel('Module') private readonly Module: Model<Module>,
+    @InjectModel('Module') private readonly DETAIL: Model<praktikumDetail>,
   ) {}
   async GET() {
     return this.PRAKTIKUM.find().populate('module').exec();
@@ -44,7 +44,7 @@ export class ServiceService {
   async DELETE(id: any) {
     const deleted = await this.PRAKTIKUM.findOneAndDelete(id);
     if (!deleted) return sendRespObj(0, 'Maaf terjadi kesalahan', {});
-    await this.Module.deleteMany({
+    await this.DETAIL.deleteMany({
       'praktikum.praktikum_name': deleted.praktikum_name,
     });
     return sendRespObj(1, 'Berhasil menghapus Praktikum', deleted);

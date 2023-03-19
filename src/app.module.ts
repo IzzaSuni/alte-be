@@ -6,7 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JadwalModule } from './jadwal/jadwal.module';
 import { KomponenModule } from './komponen/komponen.module';
 import { PenilaianModule } from './penilaian/penilaian.module';
-import { ModuleModule } from './module/module.module';
+import { ModuleModule } from './praktikum detail/module.module';
 import { GroupModule } from './group/group.module';
 import { PraktikumModule } from './praktikum/praktikum.module';
 import { LocationModule } from './location/location.module';
@@ -14,6 +14,9 @@ import { AbsenModule } from './absen/absen.module';
 import { EvaluasiModule } from './evaluasi/evaluasi.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { ControlsStateModule } from './controls-state/controls-state.module';
+import { TableModule } from './table/table.module';
+import { KomponenDetailModule } from './komponen_detail/komponen_detail.module';
+import { PraktikansModule } from './praktikans/praktikans.module';
 
 @Module({
   imports: [
@@ -32,6 +35,9 @@ import { ControlsStateModule } from './controls-state/controls-state.module';
     EvaluasiModule,
     GatewayModule,
     ControlsStateModule,
+    TableModule,
+    KomponenDetailModule,
+    PraktikansModule,
   ],
   controllers: [AppController],
   providers: [AppService],

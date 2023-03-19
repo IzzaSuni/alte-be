@@ -3,7 +3,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Praktikum } from 'src/praktikum/praktikum.model';
 import { sendRespObj } from 'src/utils/func';
-import { Module, ModuleFile, ModuleParam } from '../module.model';
+import {
+  ModuleFile,
+  praktikumDetailParam,
+  praktikumDetail,
+} from '../module.model';
 const message = {
   praktikumNotFound:
     'Maaf Praktikum belum terdaftar, silahkan input praktikum terlebih dahulu',
@@ -15,17 +19,25 @@ const message = {
 @Injectable()
 export class ServiceService {
   constructor(
-    @InjectModel('Module') private readonly Modul: Model<Module>,
+    @InjectModel('Module') private readonly DETAIL: Model<praktikumDetail>,
     @InjectModel('ModuleFile') private readonly FILE: Model<ModuleFile>,
     @InjectModel('Praktikum') private readonly Praktikum: Model<Praktikum>,
   ) {}
   async GET() {
-    return await this.Modul.find().exec();
+    return await this.DETAIL.find().exec();
+  }
+
+  async findModulPraktikum(id) {
+    const find = await this.Praktikum.findById(id).populate('module').exec();
+    if (find) {
+      return sendRespObj(1, 'berhasil mendapat data', find);
+    }
+    return sendRespObj(0, 'maaf tidak ditemukan data');
   }
 
   async POST(
     file: { buffer: object; mimetype: string },
-    payload: ModuleParam,
+    payload: praktikumDetailParam,
     praktikumId: string,
   ) {
     if (!file) return sendRespObj(10, message.noFile);
@@ -40,7 +52,7 @@ export class ServiceService {
     const fileObj = new this.FILE({
       file: file,
     });
-    const moduleObj = new this.Modul({
+    const moduleObj = new this.DETAIL({
       module_no: payload.module_no,
       module_name: payload.module_name,
       praktikum: praktikum,
@@ -58,18 +70,18 @@ export class ServiceService {
     else sendRespObj(0, 'Maaf terjadi kesalahan', {});
   }
 
-  async EDIT(file: object, payload: ModuleParam, moduleId: string) {
+  async EDIT(file: object, payload: praktikumDetailParam, moduleId: string) {
     const newObj = {
       ...payload,
       edited_at: new Date(),
     };
-    const res = await this.Modul.findByIdAndUpdate(moduleId, newObj);
+    const res = await this.DETAIL.findByIdAndUpdate(moduleId, newObj);
     if (res) return sendRespObj(1, 'Berhasil mengedit Modul', res);
     return sendRespObj(0, 'Maaf terjadi kesalahan', {});
   }
 
   async DELETE(moduleId: string) {
-    const modul = await this.Modul.findByIdAndDelete(moduleId);
+    const modul = await this.DETAIL.findByIdAndDelete(moduleId);
     if (!modul) {
       return sendRespObj(10, 'Maaf module tidak ditemukan');
     }

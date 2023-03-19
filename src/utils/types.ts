@@ -5,7 +5,7 @@ export type createUserParams = {
   nim: number;
   angkatan: number;
   created_at: string;
-  role: string;
+  role: { main: string; secondary: string };
   secret: string;
   is_finger_registered: boolean;
   _id: string;
@@ -15,21 +15,6 @@ export type createUserParams = {
 export type updateUserParams = {
   group_id: string;
   finger_id: number;
-};
-
-export type jadwalCreateParam = {
-  id: string;
-  date: string;
-  time: string;
-  is_PraktikumSchedule: boolean;
-  location: string;
-  praktikan_group: object;
-  shift: object;
-  praktikum_name: string;
-  reason: string;
-  tools: object;
-  created_at: string;
-  edited_at: string;
 };
 
 export type updatePasswordParams = {

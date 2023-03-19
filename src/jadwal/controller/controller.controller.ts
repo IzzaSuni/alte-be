@@ -3,41 +3,40 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
-import { createJadwalDto } from '../dto/jadwal.Dto';
+import { JadwalDTO } from '../jadwal.model';
 import { jadwalService } from '../service/service.service';
 
 @Controller('jadwal')
 export class ControllerController {
-  constructor(private jadwalService: jadwalService) {}
+  constructor(private jadwalServices: jadwalService) {}
 
   @Get()
   async getAllJadwal() {
-    return this.jadwalService.getAllJadwal();
+    return this.jadwalServices.getAllJadwal();
   }
 
   @Get('find')
   async findJadwalBy(@Query('month') month: number) {
-    return this.jadwalService.findJadwalBy(month);
+    return this.jadwalServices.findJadwalBy(month);
   }
 
   @Delete()
   async deleteJadwalBy(@Body() id: ObjectId) {
-    return this.jadwalService.deleteJadwal(id);
+    return this.jadwalServices.deleteJadwal(id);
   }
 
   @Post()
-  async postJadwal(@Body() createJadwal: createJadwalDto) {
-    return this.jadwalService.postJadwal(createJadwal);
+  async postJadwal(@Body() createJadwal: JadwalDTO) {
+    return this.jadwalServices.postJadwal(createJadwal);
   }
 
   @Put()
-  async EditJadwal(@Body() createJadwal: createJadwalDto) {
-    return this.jadwalService.postJadwal(createJadwal);
+  async EditJadwal(@Body() createJadwal: JadwalDTO) {
+    return this.jadwalServices.postJadwal(createJadwal);
   }
 }

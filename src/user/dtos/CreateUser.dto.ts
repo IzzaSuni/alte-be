@@ -5,7 +5,7 @@ export class CreateUserDto {
   nim: number;
   angkatan: number;
   created_at: string;
-  role: string;
+  role: { main: string; secondary: string };
   secret: string;
   is_finger_registered: boolean;
   _id: string;

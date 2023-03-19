@@ -15,19 +15,20 @@ export class ControllerController {
   constructor(private SERVICE: ServiceService) {}
 
   @Get()
-  async getAllKomponen() {
+  async getAllPraktikum() {
     return await this.SERVICE.GET();
   }
+
   @Post()
-  async postKomponen(@Body() PraktikumDTO: PraktikumDto) {
+  async createPraktikum(@Body() PraktikumDTO: PraktikumDto) {
     return this.SERVICE.POST(PraktikumDTO);
   }
   @Delete()
-  async deleteKomponen(@Query('id') id: string) {
+  async deletePraktikum(@Query('id') id: string) {
     return this.SERVICE.DELETE(id);
   }
   @Put()
-  async editKomponen(
+  async editPrakikum(
     @Body() PraktikumDTO: PraktikumDto,
     @Query('id') id: string,
   ) {

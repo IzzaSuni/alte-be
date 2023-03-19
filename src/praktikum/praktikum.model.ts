@@ -6,6 +6,7 @@ export const PraktikumSchema = new mongoose.Schema({
   created_at: { type: Date },
   edited_at: { type: Date },
   module: [{ type: SchemaTypes.ObjectId, ref: 'Module' }],
+  year: { type: String, required: true },
 });
 
 export interface Praktikum {
