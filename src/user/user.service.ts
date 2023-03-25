@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { main, sendRespObj } from 'src/utils/func';
+import {
+  forgotPasswordTemplate,
+  generateCode,
+  sendRespObj,
+} from 'src/utils/func';
 import {
   createUserParams,
   loginParam,
@@ -43,48 +47,45 @@ export class UserService {
   async updatePassword(payload: updatePasswordParams) {
     const userFind = await this.userModel.findOne({ email: payload.email });
     if (payload.token === userFind?.resetPasswordToken) {
-      return jwt.verify(
-        payload.token,
-        process.env.EMAIL_TOKEN_SECRET,
-        async (err, decoded) => {
-          if (err) {
-            userFind.resetPasswordToken = null;
-            await userFind.save();
-            return sendRespObj(2, 'Maaf tidak valid', {});
-          }
-          if (decoded) {
-            const salt = bcrypt.genSaltSync(10);
-            const hash = bcrypt.hashSync(payload.password, salt);
-            userFind.password = hash;
-            userFind.resetPasswordToken = null;
-            userFind.save();
-            return sendRespObj(1, 'Berhasil merubah password', {});
-          }
-        },
-      );
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(payload.password, salt);
+      userFind.password = hash;
+      userFind.resetPasswordToken = null;
+      userFind.resetTry = 0;
+      userFind.save();
+      return sendRespObj(1, 'Berhasil merubah password');
     }
-    return sendRespObj(3, 'Maaf Token tidak valid, atau sudah digunakan', {});
+    return sendRespObj(0, 'Maaf Token tidak valid, atau sudah digunakan');
   }
 
   async checkToken(email) {
     const userFind = await this.userModel.findOne({ email: email });
-    if (userFind.resetPasswordToken) {
-      return jwt.verify(
-        userFind.resetPasswordToken,
-        process.env.EMAIL_TOKEN_SECRET,
-        async (err, decoded) => {
-          if (err) {
-            userFind.resetPasswordToken = null;
-            await userFind.save();
-            return sendRespObj(2, 'Token sudah tidak valid', {});
-          }
-          if (decoded) {
-            return sendRespObj(1, 'Token masih Valid', {});
-          }
-        },
+    if (userFind?.resetPasswordToken) {
+      return sendRespObj(1, 'Token sudah dikirim sebelumnya');
+    }
+    return sendRespObj(0, 'Token akan dikirim');
+  }
+
+  async verifyToken({ email, token }) {
+    const userFind = await this.userModel.findOne({ email: email });
+    if (userFind) {
+      if (userFind?.resetPasswordToken === token)
+        return sendRespObj(1, 'Token Valid silahkan masukan password baru');
+      const curretTryReset = userFind?.resetTry;
+      const newTryReset = curretTryReset - 1;
+      if (curretTryReset === 0) {
+        userFind.resetPasswordToken = null;
+        await userFind.save();
+        return sendRespObj(0, `Silahkan request token baru`);
+      }
+      userFind.resetTry = newTryReset;
+      await userFind.save();
+      return sendRespObj(
+        0,
+        `Token Salah anda memiliki ${newTryReset} kesempatan`,
       );
     }
-    return sendRespObj(0, 'Token Tidak Ada', {});
+    return sendRespObj(0, `Email tidak ditemukan`);
   }
 
   async login(payload: loginParam) {
@@ -113,27 +114,23 @@ export class UserService {
     return sendRespObj(0, 'email tidak terdaftar', {});
   }
 
-  async sendEmail(to) {
-    const userFind = await this.userModel.findOne({ email: to });
+  async sendEmail(email) {
+    const userFind = await this.userModel.findOne({ email: email });
     if (userFind) {
-      const emailToken = jwt.sign(
-        {
-          email: userFind.email,
-        },
-        process.env.EMAIL_TOKEN_SECRET,
-        { expiresIn: '1h' },
-      );
-      userFind.resetPasswordToken = emailToken;
+      const code = generateCode();
+      userFind.resetPasswordToken = code;
       await userFind.save();
-      return await main('silahkan akses link berikut', emailToken, to)
-        .then(() => {
+      return await forgotPasswordTemplate(email, code)
+        .then(async () => {
+          userFind.resetTry = 3;
+          await userFind.save();
           return sendRespObj(
             1,
             'Link reset sudah terkirim ke email, silahkan dicek',
             {},
           );
         })
-        .catch(() => sendRespObj(0, 'Maaf terjadi kesalahan', {}));
+        .catch((err) => sendRespObj(0, 'Maaf terjadi kesalahan', err));
     }
     return sendRespObj(0, 'Maaf email tersebut belum terdaftar', {});
   }

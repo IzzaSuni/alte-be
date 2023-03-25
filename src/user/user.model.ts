@@ -20,6 +20,7 @@ export const userSchema = new Mongoose.Schema({
     default: false,
   },
   resetPasswordToken: { type: String },
+  resetTry: { type: Number },
   profile: { type: Object },
   socket_id: { type: String },
 });
@@ -37,10 +38,12 @@ export interface User {
   };
   finger_id: object;
   resetPasswordToken: string;
+  resetTry: number;
   created_at: string;
   edited_at: string;
   socket_id: string;
   profile: object;
+  is_finger_registered: boolean;
 }
 
 export type userParam = {
@@ -59,5 +62,6 @@ export type userParam = {
   created_at: string;
   edited_at: string;
   socket_id: string;
+  is_finger_registered: boolean;
   profile: object;
 };

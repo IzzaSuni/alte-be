@@ -47,7 +47,7 @@ export interface KomponenDetail {
 }
 
 export type KomponenDetailParam = {
-  _id: string;
+  id?: string;
   value: string;
   amount: number;
   available_amount: number;

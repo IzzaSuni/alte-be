@@ -9,11 +9,11 @@ import {
 import * as moment from 'moment';
 import { Model } from 'mongoose';
 import { Server, Socket } from 'socket.io';
+import { Absen } from 'src/absen/absen.model';
 import { ControlState } from 'src/controls-state/controls-state.model';
-import { Group, GroupParam } from 'src/group/group.model';
-import { Jadwal, JadwalParams } from 'src/jadwal/jadwal.model';
+import { Group } from 'src/group/group.model';
+import { Jadwal } from 'src/jadwal/jadwal.model';
 import { User } from 'src/user/user.model';
-import { createUserParams } from 'src/utils/types';
 
 @WebSocketGateway({ cors: true })
 export class AlteGateway implements OnModuleInit {
@@ -22,6 +22,7 @@ export class AlteGateway implements OnModuleInit {
     @InjectModel('ControlState') private readonly Control: Model<ControlState>,
     @InjectModel('Group') private readonly Group: Model<Group>,
     @InjectModel('Jadwal') private readonly Jadwal: Model<Jadwal>,
+    @InjectModel('absen') private readonly Absen: Model<Absen>,
   ) {}
 
   @WebSocketServer()
@@ -33,13 +34,6 @@ export class AlteGateway implements OnModuleInit {
       });
     });
   }
-
-  // onDisconnect() {
-  //   this.server.on('disconnect', (socket) => {
-  //     console.log(socket);
-  //     this.server.di;
-  //   });
-  // }
 
   // ir or relay
   @SubscribeMessage('control')
@@ -96,63 +90,38 @@ export class AlteGateway implements OnModuleInit {
   async onEnroll(@MessageBody() body: { fingerId: string }) {
     let payload = '';
     const { fingerId } = body;
-    const currentDate: any = moment(new Date()).format('DD MMMM YYYY');
-    const jadwals = await this.Jadwal.findOne({
-      date: currentDate,
-      'group.users.finger_id': fingerId,
-    });
-    // find user by finger id
-    const searchUserParam = {
-      finger_id: Number(fingerId),
-    };
-    const user: createUserParams = await this.User.findOne(searchUserParam);
-    const { _id, is_finger_registered } = user;
-
-    // check if finger registered
-    if (!is_finger_registered) {
-      payload = `{\"message\":\"Maaf finger print tidak terdaftar"\,\"status_door\":\ ${0} \"}`;
-      return this.server.emit(payload);
-    } else {
-      // find user groups
-      const searchUserGroup = {
-        'user_id.user_id': _id,
-      };
-      const userGroup: object[] = await this.Group.find(searchUserGroup);
-
-      // find current date jadwal
-      const todayJadwal: object[] = await this.Jadwal.find({
+    const user = await this.User.findOne({ finger_id: Number(fingerId) });
+    const { is_finger_registered } = user;
+    if (is_finger_registered) {
+      const currentDate: any = moment(new Date()).format('DD MMMM YYYY');
+      const jadwals = await this.Jadwal.findOne({
         date: currentDate,
+        'group.users.finger_id': fingerId,
       });
-
-      // check praktikum name, shift, group from every group
-      userGroup.map(
-        async ({
-          praktikum: praktikumFromGroup,
-          group: groupFromGroup,
-        }: GroupParam) => {
-          const findJadwal = todayJadwal.find(
-            ({
-              praktikum: praktikumFromJadwal,
-              group: groupFromJadwal,
-            }: JadwalParams) => {
-              const isPraktikumMatch =
-                praktikumFromJadwal.praktikum_name ===
-                praktikumFromGroup.praktikum_name;
-              const isGroupMatch = groupFromGroup === groupFromJadwal.group;
-
-              return isPraktikumMatch && isGroupMatch;
-            },
-          );
-          if (findJadwal) {
-            payload = `{\"message\":\"Anda berhasil absen\",\"status_door\":\ ${1} \"}`;
-            return this.server.emit(payload);
-          }
-        },
-      );
+      if (jadwals) {
+        const absen = await this.Absen.findOne({ jadwal_id: jadwals });
+        if (absen) {
+          payload = `{\"message\":\"Anda berhasil absen keluar\",\"status_door\":\ ${1} \"}`;
+          absen.data.clock_out = `${moment().format()}`;
+          await absen.save();
+          return this.server.emit(payload);
+        } else {
+          payload = `{\"message\":\"Anda berhasil absen masuk\",\"status_door\":\ ${1} \"}`;
+          const newAbsen = new this.Absen({
+            data: { clock_in: `${moment().format()}`, user: user },
+            jadwal_id: jadwals,
+          });
+          await newAbsen.save();
+          return this.server.emit(payload);
+        }
+      }
       payload = `{\"message\":\"Anda tidak ada jadwal hari\",\"status_door\":\ ${1} \"}`;
       return this.server.emit(payload);
     }
+    payload = `{\"message\":\"Maaf finger print tidak terdaftar"\,\"status_door\":\ ${0} \"}`;
+    return this.server.emit(payload);
   }
+
   @SubscribeMessage('enroll')
   // finger id
   async onAbsen(@MessageBody() body: { fingerId: string; userId: string }) {

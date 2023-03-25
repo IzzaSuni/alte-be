@@ -2,13 +2,14 @@ import * as google from 'googleapis';
 import * as jwt from 'jsonwebtoken';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodemailer = require('nodemailer');
-export const credentials = {
+
+export const credentials: any = {
   CLIENT_ID:
-    '474346708682-ku0gss3abqvlr8eg0rp9iqn2j2ove2fa.apps.googleusercontent.com',
+    '547480458217-qhei8q3hjnii3rr6utpbrogqt7nqr5le.apps.googleusercontent.com',
   REFRESH_TOKEN:
-    '1//04xeDWmX_mc5xCgYIARAAGAQSNwF-L9Irlgby9ZHrtzthCYgb8awFtlW3759GCwaYjaXi5oxpPyw_Ek7rIpq-8xU7sMX-Kv1mkJw',
+    '1//04uLhUeWIKShVCgYIARAAGAQSNwF-L9IrUaLIa5c81EizyjOUznm7BYhIeTM8J_-anCMmbS-VkX8pOLqv3NXqRja7WhTKFtKKPk0',
   REDIRECT_URI: 'https://developers.google.com/oauthplayground',
-  CLIENT_SECRET: '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',
+  CLIENT_SECRET: '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',
 };
 
 export const validation = (email: any) => {
@@ -46,15 +47,22 @@ export const sendRespObj = (
   };
 };
 
-export const main = async (message: any, token: any, to: string) => {
+export const forgotPasswordTemplate = async (email: string, code: string) => {
   const options = {
-    from: 'ALTE_App <kmitera.cms@gmail.com>',
-    to: to,
-    subject: 'Forgot Password reset link',
-    text: 'email test from alte app',
-    html: `<div><h5>Harap jangan berikan link ini kesiapapun</h5>
-    <h6>Jika anda tidak merequest akses reset password, abaikan pesan ini</h6>
-    <p>lupa password ya?👀, ${message}, <br/>link: https://alte.vercel.app/forgot-password?token=${token}</p></div>`,
+    from: 'ALTE_App <alte.karabar@gmail.com>',
+    to: email,
+    code: code,
+    subject: 'Reset your ALTE Password',
+    text: 'Email service ALTE',
+    html: `
+    <div style="width:300px;height:350px; border-radius:8px; background:#f5f5f5; padding: 32px;">
+      <img style="filter: invert(1);border-radius: 100%;" src="https://lh3.googleusercontent.com/a/AGNmyxY8BFi2LNITQnzRCPpkiaw93BK1GdZ6wij_KIMP=s576" width="72px" height="72px" />
+      <h3>Hello from ALTE team</h3>
+      <p style="font-size:14px;">Someone (hopefully you) has requested a password reset for your ALTE account. Provide the code below to reset your password</p>
+      <p style="font-size:14px;" >if you don't wish to reset your password, disregard this email and no action will be taken.</p>
+      <h3>Code : ${code}</h3>
+
+    </div>`,
   };
 
   const oAuth2Client = new google.Auth.OAuth2Client(
@@ -70,7 +78,7 @@ export const main = async (message: any, token: any, to: string) => {
       service: 'gmail',
       auth: {
         type: 'OAuth2',
-        user: 'kmitera.cms@gmail.com',
+        user: 'alte.karabar@gmail.com',
         clientId: credentials.CLIENT_ID,
         clientSecret: credentials.CLIENT_SECRET,
         refreshToken: credentials.REFRESH_TOKEN,
@@ -82,4 +90,48 @@ export const main = async (message: any, token: any, to: string) => {
   } catch (err) {
     console.log(err);
   }
+};
+
+export const generateCode = () => {
+  const random = () => Math.floor(Math.random() * 8) + 1;
+  const number = () => random();
+  const alphabet = [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
+  ];
+  let code = '';
+  const alphabetPosition = () => Math.floor(Math.random() * 6);
+  const alphabetIndex = () => Math.floor(Math.random() * 26);
+
+  for (let i = 0; i < 6; i++) {
+    if (i === alphabetPosition()) code += alphabet[alphabetIndex()];
+    else {
+      code += `${number()}`;
+    }
+  }
+  return code;
 };

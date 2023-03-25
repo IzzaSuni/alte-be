@@ -12,6 +12,12 @@ export class UserController {
     return result;
   }
 
+  @Post('verify-token')
+  async verifyToken(@Body() data: { email: string; token: string }) {
+    const result = await this.userServices.verifyToken(data);
+    return result;
+  }
+
   @Post()
   async postUser(@Body() CreateUserDtos: CreateUserDto) {
     const result = await this.userServices.createUser(CreateUserDtos);

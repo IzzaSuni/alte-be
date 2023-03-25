@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { absenSchema } from 'src/absen/absen.model';
 import { controlSchema } from 'src/controls-state/controls-state.model';
 import { groupSchema } from 'src/group/group.model';
 import { jadwalSchema } from 'src/jadwal/jadwal.model';
@@ -14,6 +15,7 @@ import { AlteGateway } from './gateway';
       { name: 'ControlState', schema: controlSchema },
       { name: 'Group', schema: groupSchema },
       { name: 'Jadwal', schema: jadwalSchema },
+      { name: 'absen', schema: absenSchema },
     ]),
   ],
 })

@@ -11,6 +11,7 @@ import {
   approvingParam,
   Peminjaman,
   PeminjamanParam,
+  returnParam,
 } from './peminjaman.model';
 
 @Controller('peminjaman')
@@ -37,25 +38,39 @@ export class PeminjamanController {
         (groupItem) => groupItem.group === group.group,
       );
       if (isValidGroup) {
-        const komponen = await this.KomponenDetail.findById(
-          payload.komponen_detail_id,
-        );
-        const { available_amount } = komponen;
-        if (available_amount) {
-          const newPeminjaman = new this.Peminjaman({
-            ...payload,
-            aproved: {
-              apsrak: null,
-              laboran: null,
-            },
-          });
-          newPeminjaman.save();
+        const peminjamanKomponens = [];
+        const unableToPinjam = [];
+        payload.komponen.forEach(async (item) => {
+          const komponen = await this.KomponenDetail.findById(
+            item.komponen_detail_id.id,
+          );
+          const { available_amount } = komponen;
+          if (available_amount) {
+            return peminjamanKomponens.push(item);
+          }
+          return unableToPinjam.push(item);
+        });
+        if (unableToPinjam.length > 0) {
           return sendRespObj(
-            1,
-            'Request peminjaman berhasil dibuat',
-            newPeminjaman,
+            0,
+            'maaf terdapat barang yang tidak dapat dipinjam',
+            unableToPinjam,
           );
         }
+        const newPeminjaman = new this.Peminjaman({
+          ...payload,
+          komponen: peminjamanKomponens,
+          aproved: {
+            apsrak: null,
+            laboran: null,
+          },
+        });
+        newPeminjaman.save();
+        return sendRespObj(
+          1,
+          'Request peminjaman berhasil dibuat',
+          newPeminjaman,
+        );
       }
       return sendRespObj(
         0,
@@ -79,25 +94,39 @@ export class PeminjamanController {
           (groupItem) => groupItem.group === group.group,
         );
         if (isValidGroup) {
-          const komponen = await this.KomponenDetail.findById(
-            payload.komponen_detail_id,
-          );
-          const { available_amount } = komponen;
-          if (available_amount) {
-            const newPeminjaman = new this.Peminjaman({
-              ...payload,
-              aproved: {
-                apsrak: false,
-                laboran: false,
-              },
-            });
-            newPeminjaman.save();
+          const peminjamanKomponens = [];
+          const unableToPinjam = [];
+          payload.komponen.forEach(async (item) => {
+            const komponen = await this.KomponenDetail.findById(
+              item.komponen_detail_id.id,
+            );
+            const { available_amount } = komponen;
+            if (available_amount) {
+              return peminjamanKomponens.push(item);
+            }
+            return unableToPinjam.push(item);
+          });
+          if (unableToPinjam.length > 0) {
             return sendRespObj(
-              1,
-              'Request peminjaman berhasil dibuat',
-              newPeminjaman,
+              0,
+              'maaf terdapat barang yang tidak dapat dipinjam',
+              unableToPinjam,
             );
           }
+          const newPeminjaman = new this.Peminjaman({
+            ...payload,
+            komponen: peminjamanKomponens,
+            aproved: {
+              apsrak: null,
+              laboran: null,
+            },
+          });
+          newPeminjaman.save();
+          return sendRespObj(
+            1,
+            'Request peminjaman berhasil dibuat',
+            newPeminjaman,
+          );
         }
         return sendRespObj(
           0,
@@ -118,12 +147,35 @@ export class PeminjamanController {
       if (payload.aprroved) {
         if (main === 'asprak' || secondary === 'asprak') {
           peminjaman.aproved.apsrak = payload.aprroved;
-        } else {
+          peminjaman.approved_by.asprak = user;
+        } else if (main === 'laboran') {
           peminjaman.aproved.laboran = payload.aprroved;
+          peminjaman.approved_by.laboran = user;
         }
         peminjaman.approved_at = `${moment().format()}`;
         await peminjaman.save();
         return sendRespObj(1, 'berhasil mengapprove');
+      }
+      peminjaman.notes = payload.notes;
+      await peminjaman.save();
+      return sendRespObj(1, 'berhasil menolak', peminjaman);
+    }
+    return sendRespObj(0, 'Data peminjaman tidak ada');
+  }
+
+  @Put('return')
+  async returning(@Query('id') id: string, @Body() payload: returnParam) {
+    const peminjaman = await this.Peminjaman.findById(id);
+    if (peminjaman) {
+      const user = await this.User.findById(payload.user_id);
+      const role = user.role;
+      const { main, secondary } = role;
+      if (payload.komponen) {
+        peminjaman.return_condition = {
+          ...payload,
+        };
+        await peminjaman.save();
+        return sendRespObj(1, 'berhasil mengedit data', peminjaman);
       }
     }
     return sendRespObj(0, 'Data peminjaman tidak ada');
