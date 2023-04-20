@@ -13,7 +13,7 @@ import { userSchema } from 'src/user/user.model';
     MongooseModule.forFeature([
       { name: 'group', schema: groupSchema },
       { name: 'praktikum', schema: PraktikumSchema },
-      { name: 'user', schema: userSchema },
+      { name: 'users', schema: userSchema },
     ]),
   ],
 })

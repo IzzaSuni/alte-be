@@ -10,6 +10,7 @@ import {
 import { ObjectId } from 'mongoose';
 import { JadwalDTO } from '../jadwal.model';
 import { jadwalService } from '../service/service.service';
+import { userParam } from 'src/user/user.model';
 
 @Controller('jadwal')
 export class ControllerController {
@@ -23,6 +24,11 @@ export class ControllerController {
   @Get('find')
   async findJadwalBy(@Query('month') month: number) {
     return this.jadwalServices.findJadwalBy(month);
+  }
+
+  @Get('current')
+  async findCurrentJadwal(@Query('userId') userId: userParam) {
+    return this.jadwalServices.findCurrentJadwal(userId);
   }
 
   @Delete()

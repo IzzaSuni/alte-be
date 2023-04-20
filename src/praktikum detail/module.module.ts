@@ -10,10 +10,10 @@ import { PraktikumSchema } from 'src/praktikum/praktikum.model';
   controllers: [ControllerController],
   imports: [
     MongooseModule.forFeature([
-      { name: 'Module', schema: praktikumDetailSchema },
+      { name: 'praktikum_detail', schema: praktikumDetailSchema },
       { name: 'Praktikum', schema: PraktikumSchema },
       { name: 'ModuleFile', schema: fileSchema },
     ]),
   ],
 })
-export class ModuleModule {}
+export class praktikumDetail {}

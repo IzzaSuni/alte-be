@@ -28,6 +28,11 @@ export class UserController {
     const result = await this.userServices.updatePassword(LoginDtos);
     return result;
   }
+
+  @Post('google')
+  async loginWithGoogle(@Body() data: string) {
+    return await this.userServices.loginWithGoogle(data);
+  }
 }
 
 @Controller('login')

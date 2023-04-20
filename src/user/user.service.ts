@@ -5,6 +5,7 @@ import {
   forgotPasswordTemplate,
   generateCode,
   sendRespObj,
+  validation,
 } from 'src/utils/func';
 import {
   createUserParams,
@@ -14,6 +15,8 @@ import {
 import { User } from './user.model';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto-js';
+import * as moment from 'moment';
 
 @Injectable()
 export class UserService {
@@ -30,7 +33,10 @@ export class UserService {
     }
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(payload.password, salt);
+    const googleHash = bcrypt.hashSync(payload.googlePass, salt);
     payload.password = hash;
+    payload.googlePass = googleHash;
+
     const userPayload = new this.userModel({
       ...payload,
       created_at: new Date(),
@@ -42,6 +48,45 @@ export class UserService {
     const result = await userPayload.save();
     if (result) return sendRespObj(1, 'Berhasil daftar silahkan login', result);
     return sendRespObj(3, 'Maaf terjadi kesalahan', {});
+  }
+
+  async loginWithGoogle(data) {
+    const decrypted = crypto.AES.decrypt(data?.data, 'akuIzzaMahendra1');
+    const dataDecrypted = JSON.parse(decrypted?.toString(crypto.enc.Utf8));
+    const user = await this.userModel.findOne({ email: dataDecrypted?.email });
+    const dateValid = moment(dataDecrypted?.date).isAfter(
+      moment().add(1, 'minute').format(''),
+    );
+
+    const { validDomain } = validation(dataDecrypted?.email);
+
+    if (user && !dateValid) {
+      const valid = bcrypt.compareSync(dataDecrypted?.data, user.googlePass);
+
+      const jwtReturnVal = {
+        fullname: user.fullname,
+        email: user.email,
+        id: user._id,
+        profile: user?.profile,
+        role: user?.role,
+        fingerId: user.finger_id,
+      };
+
+      const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
+
+      const jwtConfig = {
+        expiresIn: '12h',
+      };
+
+      if (valid) {
+        const accesToken = jwt.sign(jwtReturnVal, jwtSecret, jwtConfig);
+        return sendRespObj(1, 'Sukses Login', accesToken);
+      }
+      return sendRespObj(0, 'Maaf nampaknya anda melakukan bypass');
+    }
+    if (!validDomain)
+      return sendRespObj(0, 'Maaf silahkan gunakan domain itera ya');
+    return sendRespObj(0, 'Maaf pengguna tidak ditemukan,  silahkan daftar');
   }
 
   async updatePassword(payload: updatePasswordParams) {
@@ -93,12 +138,14 @@ export class UserService {
     if (userFind) {
       const valid = bcrypt.compareSync(payload.password, userFind.password);
 
+      userFind.resetPasswordToken = '';
       const jwtReturnVal = {
         fullname: userFind.fullname,
         email: userFind.email,
         id: userFind._id,
         profile: userFind?.profile,
         role: userFind?.role,
+        fingerId: userFind.finger_id,
       };
       const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
       const jwtConfig = {

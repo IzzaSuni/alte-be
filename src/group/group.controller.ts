@@ -7,7 +7,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { GroupDto } from './group.model';
+import { EditGroupParam, GroupDto } from './group.model';
 import { GroupService } from './group.service';
 
 @Controller('group')
@@ -27,7 +27,7 @@ export class GroupController {
     return this.SERVICE.DELETE(id);
   }
   @Put()
-  async editKomponen(@Body() DTO: GroupDto, @Query('id') id: string) {
-    return this.SERVICE.EDIT(DTO, id);
+  async editKomponen(@Body() payload: EditGroupParam) {
+    return this.SERVICE.EDIT(payload);
   }
 }

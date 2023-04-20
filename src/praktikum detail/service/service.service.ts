@@ -19,12 +19,13 @@ const message = {
 @Injectable()
 export class ServiceService {
   constructor(
-    @InjectModel('Module') private readonly DETAIL: Model<praktikumDetail>,
+    @InjectModel('praktikum_detail')
+    private readonly DETAIL: Model<praktikumDetail>,
     @InjectModel('ModuleFile') private readonly FILE: Model<ModuleFile>,
     @InjectModel('Praktikum') private readonly Praktikum: Model<Praktikum>,
   ) {}
   async GET() {
-    return await this.DETAIL.find().exec();
+    return await this.DETAIL.find().populate('praktikum').exec();
   }
 
   async findModulPraktikum(id) {
@@ -35,12 +36,9 @@ export class ServiceService {
     return sendRespObj(0, 'maaf tidak ditemukan data');
   }
 
-  async POST(
-    file: { buffer: object; mimetype: string },
-    payload: praktikumDetailParam,
-    praktikumId: string,
-  ) {
-    if (!file) return sendRespObj(10, message.noFile);
+  async POST(file, payload, praktikumId) {
+    console.log(file);
+    if (!file) return sendRespObj(0, message.noFile);
 
     const { mimetype } = file;
     const isWrongFileType = mimetype !== 'application/pdf';
@@ -52,6 +50,7 @@ export class ServiceService {
     const fileObj = new this.FILE({
       file: file,
     });
+
     const moduleObj = new this.DETAIL({
       module_no: payload.module_no,
       module_name: payload.module_name,
@@ -60,14 +59,11 @@ export class ServiceService {
       edited_at: null,
       file_id: fileObj.id,
     });
-    praktikum?.module.push(moduleObj);
 
     await moduleObj.save();
     await fileObj.save();
-    const res = await praktikum.save();
 
-    if (res) return sendRespObj(1, 'Berhasil menambah Modul', res);
-    else sendRespObj(0, 'Maaf terjadi kesalahan', {});
+    return sendRespObj(1, 'Berhasil menambah Modul');
   }
 
   async EDIT(file: object, payload: praktikumDetailParam, moduleId: string) {
@@ -85,7 +81,7 @@ export class ServiceService {
     if (!modul) {
       return sendRespObj(10, 'Maaf module tidak ditemukan');
     }
-    const praktikumId = modul?.praktikum._id;
+    const praktikumId = modul?.praktikum.id;
     const fileId = modul?.file_id;
     await this.Praktikum.findByIdAndUpdate(praktikumId, {
       $pull: { module: moduleId },

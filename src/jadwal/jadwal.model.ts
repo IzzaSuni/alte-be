@@ -1,19 +1,24 @@
 import Mongoose, { SchemaTypes } from 'mongoose';
 import { GroupParam } from 'src/group/group.model';
-import { PraktikumParam } from 'src/praktikum/praktikum.model';
+import { locationParam } from 'src/location/location.model';
+import { praktikumDetail } from 'src/praktikum detail/module.model';
 
 export const jadwalSchema = new Mongoose.Schema({
-  date: { type: Date, required: true },
+  date: { type: String, required: true },
   start_at: { type: Date, required: true },
   end_at: { type: Date, required: true },
   is_PraktikumSchedule: { type: Boolean, required: true },
-  location: { type: String, required: true },
-  praktikum: { type: String, required: true },
+  location: { type: SchemaTypes.ObjectId, ref: 'location', required: true },
+  praktikum_detail: {
+    type: SchemaTypes.ObjectId,
+    ref: 'praktikum_detail',
+    required: true,
+  },
   reason: { type: String, required: true },
-  group: [{ type: SchemaTypes.ObjectId, ref: 'Group' }],
-  peminjaman_id: [{ type: SchemaTypes.ObjectId, ref: 'Peminjaman' }],
+  group: [{ type: SchemaTypes.ObjectId, ref: 'group' }],
+  peminjaman_id: [{ type: SchemaTypes.ObjectId, ref: 'peminjaman' }],
   aproved: { type: Boolean, required: true },
-  table: { type: String },
+  table: { type: SchemaTypes.ObjectId, ref: 'table', required: true },
   created_at: { type: Date },
   edited_at: { type: Date },
 });
@@ -24,15 +29,15 @@ export interface Jadwal {
   end_at: string;
   id: string;
   is_PraktikumSchedule: boolean;
-  location: string;
-  praktikum: PraktikumParam;
+  location: locationParam;
+  praktikum_detail: praktikumDetail;
   group: Array<GroupParam>;
   aproved: boolean;
   reason: string;
   peminjaman_id: object;
   created_at: string;
   edited_at: string;
-  table: string;
+  table: JadwalParams;
 }
 
 export type JadwalParams = {
@@ -40,7 +45,7 @@ export type JadwalParams = {
   id: string;
   is_PraktikumSchedule: boolean;
   location: string;
-  praktikum: PraktikumParam;
+  praktikum_detail: praktikumDetail;
   reason: string;
   created_at: string;
   edited_at: string;
@@ -57,7 +62,7 @@ export class JadwalDTO {
   id: string;
   is_PraktikumSchedule: boolean;
   location: string;
-  praktikum: PraktikumParam;
+  praktikum_detail: praktikumDetail;
   reason: string;
   created_at: string;
   edited_at: string;

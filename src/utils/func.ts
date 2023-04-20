@@ -12,18 +12,26 @@ export const credentials: any = {
   CLIENT_SECRET: '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',
 };
 
-export const validation = (email: any) => {
-  let isDomainValid = false;
+export const validation = (email: string) => {
   const domain = email.slice(email.indexOf('@') + 1, email.length);
   const nim = email.slice(email.indexOf('.') + 1, email.indexOf('@'));
-  const allowedDomain = 'itera.ac.id';
+  const isPraktikan = 'student.itera.ac.id' === domain;
+  const isDosen = 'el.itera.ac.id' === domain;
+  const isStaff = 'staff.itera.ac.id' === domain;
+
+  const validDomain = isPraktikan || isDosen || isStaff;
   const angkatan = `20${nim[1]}${nim[2]}`;
   const isElektro = Number(nim.slice(3, 6)) === 130;
 
-  if (domain.includes(allowedDomain)) {
-    isDomainValid = true;
-  }
-  return { isDomainValid, isElektro, angkatan, nim };
+  return {
+    isDosen,
+    isPraktikan,
+    isStaff,
+    isElektro,
+    angkatan: Number(angkatan),
+    nim: Number(nim),
+    validDomain,
+  };
 };
 
 export const jwtVerifySecret = (jwts: string) => {

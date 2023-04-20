@@ -10,6 +10,7 @@ export class CreateUserDto {
   is_finger_registered: boolean;
   _id: string;
   profile: object;
+  googlePass: string;
 }
 export class LoginDto {
   email: string;

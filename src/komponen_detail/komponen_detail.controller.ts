@@ -84,7 +84,7 @@ export class KomponenDetailController {
         amount: find.amount,
         available_amount: find.available_amount,
         edited_at: find.edited_at,
-        user_id: find.edited_log.user_id,
+        edited_by: find.edited_log.edited_by,
         notes: find.edited_log.notes,
       };
 
@@ -105,7 +105,7 @@ export class KomponenDetailController {
       find.edited_log.before.push({ ...editedLog });
       find.edited_log.date = `${moment().format()}`;
       find.edited_log.notes = payload.notes;
-      find.edited_log.user_id = payload.user_id;
+      find.edited_log.edited_by = payload.edited_by;
       find.amount = payload.amount;
 
       let count = 0;

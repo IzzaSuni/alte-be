@@ -8,12 +8,12 @@ export const komponenDetailSchema = new mongoose.Schema({
   available_amount: { type: Number },
   edited_at: { type: Date },
   edited_log: {
-    user_id: { type: SchemaTypes.ObjectId, ref: 'user' },
+    edited_by: { type: SchemaTypes.ObjectId, ref: 'user' },
     notes: { type: String },
     date: { type: Date },
     before: [
       {
-        user_id: { type: SchemaTypes.ObjectId, ref: 'user' },
+        edited_by: { type: SchemaTypes.ObjectId, ref: 'user' },
         notes: { type: String },
         edited_at: { type: Date },
         value: { type: String, required: true },
@@ -26,7 +26,7 @@ export const komponenDetailSchema = new mongoose.Schema({
 
 type edited = {
   before: any;
-  user_id: string;
+  edited_by: string;
   notes: string;
   date: string;
   value: string;
@@ -60,7 +60,7 @@ export type editKomponenDetailParam = {
   amount: number;
   available_amount: number;
   edited_log: edited;
-  user_id: string;
+  edited_by: string;
   edited_at: string;
   notes: string;
   komponen_id: KomponenParam;

@@ -7,6 +7,7 @@ export const praktikumDetailSchema = new Mongoose.Schema({
   praktikum: { type: SchemaTypes.ObjectId, ref: 'Praktikum', required: true },
   file_id: { type: Object },
 });
+
 export const fileSchema = new Mongoose.Schema({
   file: { type: Object, required: true },
 });

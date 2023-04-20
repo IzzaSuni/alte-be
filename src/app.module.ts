@@ -6,7 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JadwalModule } from './jadwal/jadwal.module';
 import { KomponenModule } from './komponen/komponen.module';
 import { PenilaianModule } from './penilaian/penilaian.module';
-import { ModuleModule } from './praktikum detail/module.module';
+import { praktikumDetail } from './praktikum detail/module.module';
 import { GroupModule } from './group/group.module';
 import { PraktikumModule } from './praktikum/praktikum.module';
 import { LocationModule } from './location/location.module';
@@ -18,6 +18,7 @@ import { TableModule } from './table/table.module';
 import { KomponenDetailModule } from './komponen_detail/komponen_detail.module';
 import { PraktikansModule } from './praktikans/praktikans.module';
 import { PeminjamanModule } from './peminjaman/peminjaman.module';
+import { SwapGroupModule } from './swap-group/swap-group.module';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { PeminjamanModule } from './peminjaman/peminjaman.module';
     JadwalModule,
     KomponenModule,
     PenilaianModule,
-    ModuleModule,
+    praktikumDetail,
     GroupModule,
     PraktikumModule,
     LocationModule,
@@ -40,6 +41,7 @@ import { PeminjamanModule } from './peminjaman/peminjaman.module';
     KomponenDetailModule,
     PraktikansModule,
     PeminjamanModule,
+    SwapGroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],

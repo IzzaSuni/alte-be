@@ -19,6 +19,7 @@ export class ServiceService {
     const findModule = await this.PRAKTIKUM.findOne({
       praktikum_name: payload.praktikum_name,
     });
+
     if (findModule)
       return sendRespObj(13, 'Maaf Praktikum tersebut sudah tersedia');
 

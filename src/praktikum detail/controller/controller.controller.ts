@@ -33,12 +33,13 @@ export class ControllerController {
   }
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('document'))
   uploadFile(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: { buffer: object; mimetype: string },
     @Body() praktikumDetailDtos: praktikumDetailDto,
     @Query('id') praktikumId: string,
   ) {
+    console.log(file);
     return this.SERVICE.POST(file, praktikumDetailDtos, praktikumId);
   }
 

@@ -4,11 +4,14 @@ import * as moment from 'moment';
 import { Model } from 'mongoose';
 import { sendRespObj } from 'src/utils/func';
 import { Komponen, KomponenParam } from '../komponen.model';
+import { KomponenDetail } from 'src/komponen_detail/komponen.model';
 
 @Injectable()
 export class komponenService {
   constructor(
     @InjectModel('Komponen') private readonly KomponenModel: Model<Komponen>,
+    @InjectModel('komponen_detail')
+    private readonly KomponenDetail: Model<KomponenDetail>,
   ) {}
 
   async getAllKomponen() {
@@ -42,7 +45,12 @@ export class komponenService {
   async deleteKomponen(id: string) {
     try {
       const res = await this.KomponenModel.findByIdAndDelete(id);
-      if (res) return sendRespObj(1, 'Berhasil menghapus dokumen', res);
+      const deleteChild = await this.KomponenDetail.deleteMany({
+        _id: { $in: res.komponen_detail },
+      });
+
+      if (res && deleteChild)
+        return sendRespObj(1, 'Berhasil menghapus dokumen', res);
       return sendRespObj(0, 'maaf dokumen tidak ada');
     } catch (err) {
       return sendRespObj(0, 'Maaf terjadi kesalahan', err);

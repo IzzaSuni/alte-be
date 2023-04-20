@@ -2,7 +2,7 @@ import { Body, Controller, Get, Patch } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { sendRespObj } from 'src/utils/func';
-import { ControlState, ControlStateDto } from './controls-state.model';
+import { ControlState } from './controls-state.model';
 
 @Controller('controls-state')
 export class ControlsStateController {
@@ -15,7 +15,7 @@ export class ControlsStateController {
     return await this.ControlModel.find().exec();
   }
   @Patch()
-  async setControlState(@Body() ControlStateDTO: ControlStateDto) {
+  async setControlState(@Body() ControlStateDTO: ControlState) {
     const { ac_controls }: any = ControlStateDTO;
 
     const update = await this.ControlModel.findByIdAndUpdate(

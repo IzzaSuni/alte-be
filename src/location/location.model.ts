@@ -10,6 +10,7 @@ export interface location {
   laboran: Array<string>;
 }
 export type locationParam = {
+  id: string;
   location_name: string;
   laboran: Array<string>;
 };

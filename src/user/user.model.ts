@@ -3,6 +3,7 @@ import Mongoose from 'mongoose';
 export const userSchema = new Mongoose.Schema({
   fullname: { type: String, required: true },
   password: { type: String, required: true },
+  googlePass: { type: String },
   email: { type: String, required: true },
   angkatan: { type: Number, required: true },
   nim: { type: Number, required: true },
@@ -23,11 +24,13 @@ export const userSchema = new Mongoose.Schema({
   resetTry: { type: Number },
   profile: { type: Object },
   socket_id: { type: String },
+  retry_finger: { type: Number, default: 2 },
 });
 
 export interface User {
   id: string;
   fullname: string;
+  googlePass: string;
   password: string;
   email: string;
   angkatan: number;
@@ -36,7 +39,7 @@ export interface User {
     main: string;
     secondary: string;
   };
-  finger_id: object;
+  finger_id: number;
   resetPasswordToken: string;
   resetTry: number;
   created_at: string;
@@ -44,10 +47,12 @@ export interface User {
   socket_id: string;
   profile: object;
   is_finger_registered: boolean;
+  retry_finger: number;
 }
 
 export type userParam = {
   id: string;
+  googlePass: string;
   fullname: string;
   password: string;
   email: string;
@@ -57,11 +62,12 @@ export type userParam = {
     main: string;
     secondary: string;
   };
-  finger_id: object;
+  finger_id: number;
   resetPasswordToken: string;
   created_at: string;
   edited_at: string;
   socket_id: string;
   is_finger_registered: boolean;
   profile: object;
+  retry_finger: number;
 };

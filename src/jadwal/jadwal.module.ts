@@ -4,10 +4,26 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { jadwalSchema } from './jadwal.model';
 import { TokenCheck } from 'src/user/user.middleware';
 import { jadwalService } from './service/service.service';
+import { PraktikumSchema } from 'src/praktikum/praktikum.model';
+import { locationSchema } from 'src/location/location.model';
+import { groupSchema } from 'src/group/group.model';
+import { peminjamanSchema } from 'src/peminjaman/peminjaman.model';
+import { tableSchema } from 'src/table/table.model';
+import { praktikumDetailSchema } from 'src/praktikum detail/module.model';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'jadwal', schema: jadwalSchema }]),
+    MongooseModule.forFeature([{ name: 'praktikum', schema: PraktikumSchema }]),
+    MongooseModule.forFeature([
+      { name: 'praktikum_detail', schema: praktikumDetailSchema },
+    ]),
+    MongooseModule.forFeature([{ name: 'location', schema: locationSchema }]),
+    MongooseModule.forFeature([{ name: 'group', schema: groupSchema }]),
+    MongooseModule.forFeature([{ name: 'table', schema: tableSchema }]),
+    MongooseModule.forFeature([
+      { name: 'peminjaman', schema: peminjamanSchema },
+    ]),
   ],
   providers: [jadwalService],
   controllers: [ControllerController],
