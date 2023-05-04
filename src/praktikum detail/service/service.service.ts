@@ -8,6 +8,7 @@ import {
   praktikumDetailParam,
   praktikumDetail,
 } from '../module.model';
+
 const message = {
   praktikumNotFound:
     'Maaf Praktikum belum terdaftar, silahkan input praktikum terlebih dahulu',
@@ -22,16 +23,23 @@ export class ServiceService {
     @InjectModel('praktikum_detail')
     private readonly DETAIL: Model<praktikumDetail>,
     @InjectModel('ModuleFile') private readonly FILE: Model<ModuleFile>,
+    @InjectModel('praktikum_detail')
+    private readonly PRAKTIKUMDETAIL: Model<praktikumDetail>,
     @InjectModel('Praktikum') private readonly Praktikum: Model<Praktikum>,
   ) {}
+
   async GET() {
     return await this.DETAIL.find().populate('praktikum').exec();
   }
 
   async findModulPraktikum(id) {
-    const find = await this.Praktikum.findById(id).populate('module').exec();
-    if (find) {
-      return sendRespObj(1, 'berhasil mendapat data', find);
+    const praktikum = await this.Praktikum.findById(id);
+    const praktikumDetailList = await this.PRAKTIKUMDETAIL.find({
+      praktikum: praktikum?.id,
+    }).populate('praktikum');
+
+    if (praktikumDetailList) {
+      return sendRespObj(1, 'berhasil mendapat data', praktikumDetailList);
     }
     return sendRespObj(0, 'maaf tidak ditemukan data');
   }

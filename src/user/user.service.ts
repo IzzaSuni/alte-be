@@ -18,13 +18,13 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto-js';
 import * as moment from 'moment';
 
+// if (req.headers.origin !== 'https://alte.vercel.app')
+//   return sendRespObj(10, 'HMMM no no no', {});
 @Injectable()
 export class UserService {
   constructor(@InjectModel('user') private readonly userModel: Model<User>) {}
 
   async createUser(payload: createUserParams) {
-    // if (req.headers.origin !== 'https://alte.vercel.app')
-    //   return sendRespObj(10, 'HMMM no no no', {});
     const userFind = await this.userModel.findOne({ email: payload.email });
     const findAll = await this.userModel.find();
     const length = findAll.length;

@@ -11,8 +11,9 @@ export class ServiceService {
     @InjectModel('Praktikum') private readonly PRAKTIKUM: Model<Praktikum>,
     @InjectModel('Module') private readonly DETAIL: Model<praktikumDetail>,
   ) {}
+
   async GET() {
-    return this.PRAKTIKUM.find().populate('module').exec();
+    return this.PRAKTIKUM.find().exec();
   }
 
   async POST(payload: PraktikumParam) {

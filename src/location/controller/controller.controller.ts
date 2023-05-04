@@ -3,11 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { sendRespObj } from 'src/utils/func';
 import { location, locationDTO } from '../location.model';
+import { table } from 'src/table/table.model';
 
 @Controller('lokasi')
 export class ControllerController {
   constructor(
     @InjectModel('Location') private readonly LOCATION: Model<location>,
+    @InjectModel('table') private readonly TABLE: Model<table>,
   ) {}
 
   @Get()
@@ -23,13 +25,17 @@ export class ControllerController {
 
     if (location)
       return sendRespObj(0, 'Lokasi tersebut sudah terdaftar', location);
+
     const registerLocation = new this.LOCATION({
       laboran: payload.laboran,
       location_name: payload.location_name,
     });
-    await registerLocation.save();
-    return sendRespObj(0, 'Lokasi berhasil terdaftar', registerLocation);
+
+    console.log(registerLocation);
   }
+  //   await registerLocation.save();
+  //   return sendRespObj(0, 'Lokasi berhasil terdaftar', registerLocation);
+  // }
 
   @Put()
   async editLocation(@Body() payload: locationDTO) {
