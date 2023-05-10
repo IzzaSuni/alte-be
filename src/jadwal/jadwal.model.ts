@@ -21,6 +21,7 @@ export const jadwalSchema = new Mongoose.Schema({
   table: { type: SchemaTypes.ObjectId, ref: 'table', required: true },
   created_at: { type: Date },
   edited_at: { type: Date },
+  tools: [{ type: SchemaTypes.ObjectId, ref: 'tools' }],
 });
 
 export interface Jadwal {
@@ -38,6 +39,7 @@ export interface Jadwal {
   created_at: string;
   edited_at: string;
   table: JadwalParams;
+  tools: any[];
 }
 
 export type JadwalParams = {
@@ -55,6 +57,7 @@ export type JadwalParams = {
   end_at: string;
   peminjaman_id: object;
   table: string;
+  tools: any[];
 };
 
 export class JadwalDTO {
@@ -72,4 +75,5 @@ export class JadwalDTO {
   end_at: string;
   peminjaman_id: object;
   table: string;
+  tools: any[];
 }

@@ -30,7 +30,7 @@ export class KomponenDetailController {
 
   @Get()
   async getAllKomponenDetail() {
-    return await this.DETAILL.find().exec();
+    return await this.DETAILL.find().populate('komponen_id').exec();
   }
 
   @Post()

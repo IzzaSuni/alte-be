@@ -19,6 +19,7 @@ import { KomponenDetailModule } from './komponen_detail/komponen_detail.module';
 import { PraktikansModule } from './praktikans/praktikans.module';
 import { PeminjamanModule } from './peminjaman/peminjaman.module';
 import { SwapGroupModule } from './swap-group/swap-group.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { SwapGroupModule } from './swap-group/swap-group.module';
     PraktikansModule,
     PeminjamanModule,
     SwapGroupModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

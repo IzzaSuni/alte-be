@@ -1,5 +1,6 @@
 import { OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Cron } from '@nestjs/schedule';
 import {
   MessageBody,
   SubscribeMessage,
@@ -27,6 +28,7 @@ export class AlteGateway implements OnModuleInit {
 
   @WebSocketServer()
   server: Server;
+
   onModuleInit() {
     this.server.on('connection', async (socket: Socket) => {
       const ControlStates = await this.Control.findById(
@@ -51,6 +53,11 @@ export class AlteGateway implements OnModuleInit {
     });
   }
 
+  @Cron('0 0 * * * *')
+  async handleCron() {
+    await this.checkJadwal();
+  }
+
   // web
   @SubscribeMessage('controlRelay')
   async onControlRelayWeb(
@@ -64,7 +71,6 @@ export class AlteGateway implements OnModuleInit {
       '63e4fcf891f3c8e32262f367',
     );
 
-    console.log(body, ControlStates);
     const { relay2, relay3 } = body;
 
     const relayB = relay2 ? 'ON' : 'OFF';
@@ -115,7 +121,6 @@ export class AlteGateway implements OnModuleInit {
       const currentHour = moment(new Date());
       const isBetween = currentHour.isBetween(startHour, endHour);
 
-      console.log(currentHour, startHour, endHour);
       if (isBetween) {
         foundJadwal = jadwal;
       }
@@ -148,6 +153,7 @@ export class AlteGateway implements OnModuleInit {
 
     return this.server.emit('door', ControlStates.relay1);
   }
+
   // arduino
   @SubscribeMessage('updateDoor')
   async doorUpdate(

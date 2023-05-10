@@ -10,6 +10,7 @@ import { groupSchema } from 'src/group/group.model';
 import { peminjamanSchema } from 'src/peminjaman/peminjaman.model';
 import { tableSchema } from 'src/table/table.model';
 import { praktikumDetailSchema } from 'src/praktikum detail/module.model';
+import { komponenDetailSchema } from 'src/komponen_detail/komponen.model';
 
 @Module({
   imports: [
@@ -23,6 +24,9 @@ import { praktikumDetailSchema } from 'src/praktikum detail/module.model';
     MongooseModule.forFeature([{ name: 'table', schema: tableSchema }]),
     MongooseModule.forFeature([
       { name: 'peminjaman', schema: peminjamanSchema },
+    ]),
+    MongooseModule.forFeature([
+      { name: 'tools', schema: komponenDetailSchema },
     ]),
   ],
   providers: [jadwalService],
