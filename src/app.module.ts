@@ -24,7 +24,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://soxiSpeed:Sunariadi180901!@alte.uypme2k.mongodb.net/ALTE?retryWrites=true&w=majority',
+      'mongodb+srv://user:pw@alte.uypme2k.mongodb.net/ALTE?retryWrites=true&w=majority',
     ),
     UserModule,
     JadwalModule,
